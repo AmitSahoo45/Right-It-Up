@@ -4,4 +4,8 @@ interface Dispute {
     partyB: { name: string; argument: string; evidence?: string[] };
 }
 
+interface NavbarProps {
+    user: User | null
+}
+
 type AIProvider = 'anthropic' | 'groq' | 'gemini';

@@ -1,7 +1,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 
 
-import { buildUserPrompt } from "@/util/helper";
+import { buildUserPrompt } from "@/utils/helper";
 
 export const generateVerdictFromAnthropic = async (dispute: Dispute) => {
     try {

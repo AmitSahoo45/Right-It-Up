@@ -1,5 +1,5 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { buildUserPrompt } from "@/util/helper";
+import { buildUserPrompt } from "@/utils/helper";
 
 const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_API_GEMINI_RAF!);
 

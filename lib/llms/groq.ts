@@ -1,7 +1,7 @@
 import Groq from "groq-sdk";
 
 
-import { buildUserPrompt } from "@/util/helper";
+import { buildUserPrompt } from "@/utils/helper";
 
 const groq = new Groq({ apiKey: process.env.NEXT_PUBLIC_API_GROQ_KEY! });
 
