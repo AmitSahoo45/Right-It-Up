@@ -102,11 +102,11 @@ export default async function Home() {
                 <div className="space-y-3 mb-4">
                   <div className="flex justify-between">
                     <span className="text-steel-grey">Party A:</span>
-                    <span className="text-cyber-blue">@sarah_vibes</span>
+                    <span className="text-cyber-blue">@akansha_vibes</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-steel-grey">Party B:</span>
-                    <span className="text-objection-red">@mike_actually</span>
+                    <span className="text-objection-red">@amit_actually</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-steel-grey">Category:</span>
@@ -120,14 +120,14 @@ export default async function Home() {
                 {/* Scores */}
                 <div className="space-y-2 mb-4">
                   <div className="flex justify-between items-center">
-                    <span className="text-steel-grey">Sarah&apos;s Score:</span>
+                    <span className="text-steel-grey">Akansha&apos;s Score:</span>
                     <span className="text-verdict-green font-bold">78/100</span>
                   </div>
                   <div className="w-full bg-charcoal-layer rounded-full h-2">
                     <div className="bg-gradient-to-r from-verdict-green to-cyber-blue h-2 rounded-full" style={{ width: '78%' }}></div>
                   </div>
                   <div className="flex justify-between items-center mt-3">
-                    <span className="text-steel-grey">Mike&apos;s Score:</span>
+                    <span className="text-steel-grey">Amit&apos;s Score:</span>
                     <span className="text-objection-red font-bold">52/100</span>
                   </div>
                   <div className="w-full bg-charcoal-layer rounded-full h-2">
@@ -141,13 +141,13 @@ export default async function Home() {
                 {/* Verdict */}
                 <div className="text-center py-4 bg-verdict-green/10 rounded-xl border border-verdict-green/30 mb-4">
                   <div className="text-steel-grey text-xs mb-1">THE VERDICT IS IN</div>
-                  <div className="text-verdict-green font-black text-2xl">🏆 SARAH WINS</div>
+                  <div className="text-verdict-green font-black text-2xl">🏆 Akansha WINS</div>
                   <div className="text-steel-grey text-xs mt-1">Confidence: 87%</div>
                 </div>
 
                 {/* Summary */}
                 <div className="text-steel-grey text-xs leading-relaxed mb-4">
-                  &quot;Sarah presented clear evidence of prior agreement. Mike&apos;s argument relied heavily on assumptions without supporting documentation.&quot;
+                  &quot;Akansha presented clear evidence of prior agreement. Amit&apos;s argument relied heavily on assumptions without supporting documentation.&quot;
                 </div>
 
                 {/* Footer */}

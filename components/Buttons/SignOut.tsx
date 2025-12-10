@@ -1,9 +1,10 @@
 export function SignOut() {
     return (
-        <form action="/auth/signout" method="post">
+        <form action="/auth/signout" method="post" className="w-full md:w-auto">
             <button
                 type="submit"
-                className="px-4 py-2 bg-objection-red/20 text-objection-red hover:bg-objection-red/30 rounded-xl text-sm font-medium transition-all border border-objection-red/30 hover:border-objection-red/50 cursor-pointer">
+                className="w-full md:w-auto px-4 py-2 md:py-2 bg-objection-red/10 text-objection-red hover:bg-objection-red/20 rounded-xl text-sm font-medium transition-all border border-objection-red/20 hover:border-objection-red/40"
+            >
                 Logout
             </button>
         </form>
