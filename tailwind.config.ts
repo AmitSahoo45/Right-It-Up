@@ -28,6 +28,13 @@ const config: Config = {
         'scan-line': 'scan-line 2s ease-in-out',
         'typing': 'typing 0.5s steps(20)',
         'glow-pulse': 'glow-pulse 2s ease-in-out infinite',
+        'fade-in': 'fade-in 0.8s ease-out forwards',
+        'fade-in-up': 'fade-in-up 1s ease-out forwards',
+        'gradient-shift': 'gradient-shift 4s ease infinite',
+        'float': 'float 3s ease-in-out infinite',
+        'pulse-glow': 'pulse-glow 2s ease-in-out infinite',
+        'shimmer': 'shimmer 2s infinite',
+        'bounce-subtle': 'bounce-subtle 2s ease-in-out infinite',
       },
       keyframes: {
         'gavel-slam': {
@@ -46,11 +53,44 @@ const config: Config = {
           '0%, 100%': { boxShadow: '0 0 20px rgba(124, 58, 237, 0.5)' },
           '50%': { boxShadow: '0 0 40px rgba(124, 58, 237, 0.8)' },
         },
+        'fade-in': {
+          'from': { opacity: '0', transform: 'translateY(20px)' },
+          'to': { opacity: '1', transform: 'translateY(0)' },
+        },
+        'fade-in-up': {
+          'from': { opacity: '0', transform: 'translateY(40px)' },
+          'to': { opacity: '1', transform: 'translateY(0)' },
+        },
+        'gradient-shift': {
+          '0%, 100%': { backgroundPosition: '0% 50%' },
+          '50%': { backgroundPosition: '100% 50%' },
+        },
+        'float': {
+          '0%, 100%': { transform: 'translateY(0px)' },
+          '50%': { transform: 'translateY(-10px)' },
+        },
+        'pulse-glow': {
+          '0%, 100%': { boxShadow: '0 0 20px rgba(124, 58, 237, 0.4)' },
+          '50%': { boxShadow: '0 0 40px rgba(124, 58, 237, 0.7)' },
+        },
+        'shimmer': {
+          '0%': { backgroundPosition: '-200% 0' },
+          '100%': { backgroundPosition: '200% 0' },
+        },
+        'bounce-subtle': {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-5px)' },
+        },
       },
       boxShadow: {
         'electric-glow': '0 0 30px rgba(124, 58, 237, 0.6)',
         'verdict-green-glow': '0 0 30px rgba(16, 185, 129, 0.6)',
         'objection-red-glow': '0 0 30px rgba(239, 68, 68, 0.6)',
+        'cyber-blue-glow': '0 0 30px rgba(59, 130, 246, 0.6)',
+      },
+      backgroundImage: {
+        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+        'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
       },
     },
   },
