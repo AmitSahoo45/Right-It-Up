@@ -1,4 +1,3 @@
-import { User } from '@supabase/supabase-js'
 import { SignOut } from './Buttons/SignOut';
 
 export function Navbar({ user }: NavbarProps) {
@@ -8,7 +7,7 @@ export function Navbar({ user }: NavbarProps) {
         <nav className="fixed top-4 left-1/2 -translate-x-1/2 w-[80%] z-50 rounded-2xl border border-white/10 bg-black/60 backdrop-blur-md shadow-xl">
             <div className="px-6 py-3 flex items-center justify-between">
                 <a href="/" className="text-xl font-bold text-white flex items-center gap-2">
-                    ⚖️ WhosRight
+                    ⚖️ Right It Up
                 </a>
 
                 <div className="flex items-center gap-4">
@@ -29,7 +28,7 @@ export function Navbar({ user }: NavbarProps) {
                             </span>
                             <a
                                 href="/login"
-                                className="bg-white text-gray-900 px-4 py-1.5 rounded-lg text-sm font-semibold hover:bg-gray-100 transition-colors"
+                                className="bg-electric-violet text-white px-5 py-2 rounded-xl text-sm font-bold hover:bg-electric-violet/90 transition-all shadow-electric-glow hover:shadow-2xl uppercase tracking-wide"
                             >
                                 Sign In
                             </a>
