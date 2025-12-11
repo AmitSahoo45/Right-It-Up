@@ -1,18 +1,20 @@
 import Anthropic from "@anthropic-ai/sdk";
+import { buildUserPrompt, buildSystemPrompt } from "@/utils/helper";
 
-
-import { buildUserPrompt } from "@/utils/helper";
-
-export const generateVerdictFromAnthropic = async (dispute: Dispute) => {
+export const generateVerdictFromAnthropic = async (
+    dispute: Dispute,
+    category: DisputeCategory = 'general',
+    tone: VerdictTone = 'neutral'
+) => {
     try {
         const client = new Anthropic();
-
         const userPrompt = buildUserPrompt(dispute);
+        const systemPrompt = buildSystemPrompt(category, tone);
 
         const response = await client.messages.create({
             model: "claude-3-5-haiku-20241022",
             max_tokens: 2000,
-            system: JUDGE_SYSTEM_PROMPT,
+            system: systemPrompt,
             messages: [{ role: "user", content: userPrompt }],
         });
 
@@ -22,4 +24,4 @@ export const generateVerdictFromAnthropic = async (dispute: Dispute) => {
         console.error("Error generating verdict from Anthropic:", error);
         throw error;
     }
-}
+};

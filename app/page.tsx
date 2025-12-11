@@ -204,7 +204,7 @@ export default async function Home() {
                 <div className="text-electric-violet font-mono text-sm mb-2">STEP 01</div>
                 <h3 className="text-2xl font-bold text-starlight-white mb-3">State Your Case</h3>
                 <p className="text-steel-grey leading-relaxed">
-                  Describe the argument from your POV. Add evidence, screenshots, receipts — whatever backs you up.
+                  Describe the argument from your POV. Add evidence, screenshots, receipts - whatever backs you up.
                 </p>
               </div>
             </div>
@@ -291,13 +291,13 @@ export default async function Home() {
                   <div className="text-4xl mb-4">🧠</div>
                   <h3 className="text-2xl font-bold text-starlight-white mb-2">Multi-Model Intelligence</h3>
                   <p className="text-steel-grey max-w-md">
-                    Powered by Claude, Gemini & Groq. We pick the best model for your case type — emotional intelligence for relationships, logical rigor for tech debates.
+                    Powered by Claude, Gemini & Groq. We pick the best model for your case type - emotional intelligence for relationships, logical rigor for tech debates.
                   </p>
                 </div>
                 <div className="hidden md:flex gap-2">
-                  <span className="px-2 py-1 bg-electric-violet/20 text-electric-violet text-xs rounded-lg">Claude</span>
-                  <span className="px-2 py-1 bg-cyber-blue/20 text-cyber-blue text-xs rounded-lg">Gemini</span>
-                  <span className="px-2 py-1 bg-verdict-green/20 text-verdict-green text-xs rounded-lg">Groq</span>
+                  <span className="px-2 py-1 bg-[#D97757]/20 text-[#D97757] text-xs rounded-lg">Claude</span>
+                  <span className="px-2 py-1 bg-[#1A73E8]/20 text-[#1A73E8] text-xs rounded-lg">Gemini</span>
+                  <span className="px-2 py-1 bg-[#F55036]/20 text-[#F55036] text-xs rounded-lg">Groq</span>
                 </div>
               </div>
             </div>
@@ -306,7 +306,7 @@ export default async function Home() {
             <div className="bg-charcoal-layer/50 border border-white/10 rounded-3xl p-6 hover:border-caution-amber/30 transition-all">
               <div className="text-3xl mb-3">📎</div>
               <h3 className="text-xl font-bold text-starlight-white mb-2">Evidence Upload</h3>
-              <p className="text-steel-grey text-sm">Screenshots, receipts, chat logs — upload your proof.</p>
+              <p className="text-steel-grey text-sm">Screenshots, receipts, chat logs - upload your proof.</p>
             </div>
 
             {/* Small card */}
@@ -321,7 +321,7 @@ export default async function Home() {
               <div className="text-5xl">🎯</div>
               <div>
                 <h3 className="text-xl font-bold text-starlight-white mb-1">Confidence Scoring</h3>
-                <p className="text-steel-grey text-sm">Every verdict shows how confident the AI is — from &quot;pretty sure&quot; to &quot;slam dunk case.&quot;</p>
+                <p className="text-steel-grey text-sm">Every verdict shows how confident the AI is - from &quot;pretty sure&quot; to &quot;slam dunk case.&quot;</p>
               </div>
             </div>
           </div>
@@ -337,7 +337,7 @@ export default async function Home() {
                 Ready to settle it?
               </h2>
               <p className="text-steel-grey text-lg mb-8 max-w-xl mx-auto">
-                Stop arguing in circles. Get an unbiased verdict in under 30 seconds. Your first case is free — no signup needed.
+                Stop arguing in circles. Get an unbiased verdict in under 30 seconds. Your first case is free - no signup needed.
               </p>
               <Link
                 href="/submit"

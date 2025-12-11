@@ -129,7 +129,7 @@ export function Navbar({ user }: NavbarProps) {
                             {/* Guest Badge */}
                             <div className="flex items-center justify-center gap-2 p-3 bg-caution-amber/10 rounded-xl border border-caution-amber/20">
                                 <span className="text-2xl">🎁</span>
-                                <span className="text-caution-amber text-sm font-medium">Try 1 verdict free — no signup!</span>
+                                <span className="text-caution-amber text-sm font-medium">Try 1 verdict free - no signup!</span>
                             </div>
 
                             {/* Actions */}
