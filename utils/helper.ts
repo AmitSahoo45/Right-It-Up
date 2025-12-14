@@ -1,3 +1,4 @@
+import { JUDGE_SYSTEM_PROMPT } from '@/constants';
 import type { Dispute, DisputeCategory, VerdictTone } from '@/types';
 
 // ============================================

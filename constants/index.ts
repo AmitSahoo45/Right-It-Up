@@ -1,4 +1,4 @@
-const JUDGE_SYSTEM_PROMPT = `You are an impartial AI arbitrator analyzing disputes between parties.
+export const JUDGE_SYSTEM_PROMPT = `You are an impartial AI arbitrator analyzing disputes between parties.
 
 ## Your Role
 - Analyze arguments objectively based on logic, evidence, and reasoning quality

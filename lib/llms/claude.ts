@@ -1,5 +1,6 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { buildUserPrompt, buildSystemPrompt } from "@/utils/helper";
+import { Dispute, DisputeCategory, VerdictTone } from "@/types";
 
 export const generateVerdictFromAnthropic = async (
     dispute: Dispute,

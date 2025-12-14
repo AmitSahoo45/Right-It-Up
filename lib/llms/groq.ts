@@ -1,5 +1,6 @@
 import Groq from "groq-sdk";
 import { buildUserPrompt, buildSystemPrompt } from "@/utils/helper";
+import { Dispute, DisputeCategory, VerdictTone } from "@/types";
 
 const groq = new Groq({ apiKey: process.env.NEXT_PUBLIC_API_GROQ_KEY! });
 

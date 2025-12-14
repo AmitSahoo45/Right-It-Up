@@ -1,5 +1,6 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { buildUserPrompt, buildSystemPrompt } from "@/utils/helper";
+import { Dispute, DisputeCategory, VerdictTone } from "@/types";
 
 const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_API_GEMINI_RAF!);
 
@@ -12,7 +13,7 @@ export const generateVerdictFromGemini = async (
         const systemPrompt = buildSystemPrompt(category, tone);
 
         const model = genAI.getGenerativeModel({
-            model: "gemini-1.5-flash",
+            model: "gemini-2.5-flash",
             systemInstruction: systemPrompt
         });
 
