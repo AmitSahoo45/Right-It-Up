@@ -3,7 +3,7 @@
 import { useRef, useState } from 'react';
 import type { Case, Verdict } from '@/types';
 import { JUDGE_PERSONAS, CATEGORY_OPTIONS } from '@/types';
-import { formatDate } from '@/lib/db';
+import { formatDate } from '@/lib/utils';
 
 interface VerdictReceiptProps {
     caseData: Case;
@@ -13,33 +13,33 @@ interface VerdictReceiptProps {
 export function VerdictReceipt({ caseData, verdict }: VerdictReceiptProps) {
     const receiptRef = useRef<HTMLDivElement>(null);
     const [isDownloading, setIsDownloading] = useState(false);
-    
+
     const judge = JUDGE_PERSONAS[caseData.category];
     const category = CATEGORY_OPTIONS.find(c => c.value === caseData.category);
-    
-    const winnerName = verdict.winner === 'partyA' 
-        ? caseData.party_a_name 
-        : verdict.winner === 'partyB' 
-            ? caseData.party_b_name 
+
+    const winnerName = verdict.winner === 'partyA'
+        ? caseData.party_a_name
+        : verdict.winner === 'partyB'
+            ? caseData.party_b_name
             : null;
-    
+
     const isDraw = verdict.winner === 'draw';
-    
+
     const downloadAsImage = async () => {
         if (!receiptRef.current) return;
         setIsDownloading(true);
-        
+
         try {
             // Dynamic import html2canvas
             const html2canvas = (await import('html2canvas')).default;
-            
+
             const canvas = await html2canvas(receiptRef.current, {
                 backgroundColor: '#1a1a2e',
                 scale: 2,
                 logging: false,
                 useCORS: true
             });
-            
+
             const link = document.createElement('a');
             link.download = `verdict-${caseData.code}.png`;
             link.href = canvas.toDataURL('image/png');
@@ -47,10 +47,10 @@ export function VerdictReceipt({ caseData, verdict }: VerdictReceiptProps) {
         } catch (error) {
             console.error('Failed to download:', error);
         }
-        
+
         setIsDownloading(false);
     };
-    
+
     return (
         <div>
             {/* Receipt Card */}
@@ -65,7 +65,7 @@ export function VerdictReceipt({ caseData, verdict }: VerdictReceiptProps) {
                     <div className="text-steel-grey text-xs">OFFICIAL VERDICT RECEIPT</div>
                     <div className="text-steel-grey text-xs mt-1">Case #{caseData.code}</div>
                 </div>
-                
+
                 {/* Parties */}
                 <div className="space-y-3 mb-4">
                     <div className="flex justify-between">
@@ -85,10 +85,10 @@ export function VerdictReceipt({ caseData, verdict }: VerdictReceiptProps) {
                         <span className="text-caution-amber">{category?.icon} {category?.label}</span>
                     </div>
                 </div>
-                
+
                 {/* Divider */}
                 <div className="border-t border-dashed border-white/20 my-4"></div>
-                
+
                 {/* Scores */}
                 <div className="space-y-3 mb-4">
                     <div>
@@ -120,28 +120,27 @@ export function VerdictReceipt({ caseData, verdict }: VerdictReceiptProps) {
                         </div>
                     </div>
                 </div>
-                
+
                 {/* Divider */}
                 <div className="border-t border-dashed border-white/20 my-4"></div>
-                
+
                 {/* Verdict Box */}
-                <div className={`text-center py-4 rounded-xl border mb-4 ${
-                    isDraw
+                <div className={`text-center py-4 rounded-xl border mb-4 ${isDraw
                         ? 'bg-caution-amber/10 border-caution-amber/30'
                         : 'bg-verdict-green/10 border-verdict-green/30'
-                }`}>
+                    }`}>
                     <div className="text-steel-grey text-xs mb-1">THE VERDICT IS IN</div>
                     <div className={`font-black text-2xl ${isDraw ? 'text-caution-amber' : 'text-verdict-green'}`}>
                         {isDraw ? '🤝 IT\'S A DRAW' : `🏆 ${winnerName} WINS`}
                     </div>
                     <div className="text-steel-grey text-xs mt-1">Confidence: {verdict.confidence}%</div>
                 </div>
-                
+
                 {/* Summary */}
                 <div className="text-steel-grey text-xs leading-relaxed mb-4">
                     &quot;{verdict.summary}&quot;
                 </div>
-                
+
                 {/* Footer */}
                 <div className="text-center border-t border-dashed border-white/20 pt-4">
                     <div className="text-steel-grey text-xs">════════════════════</div>
@@ -151,7 +150,7 @@ export function VerdictReceipt({ caseData, verdict }: VerdictReceiptProps) {
                     <div className="text-steel-grey text-[10px]">rightitup.vercel.app</div>
                 </div>
             </div>
-            
+
             {/* Download Button */}
             <button
                 onClick={downloadAsImage}

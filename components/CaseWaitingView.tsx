@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import type { Case } from '@/types';
-import { getTimeRemaining } from '@/lib/db';
+import { getTimeRemaining } from '@/lib/utils';  
 
 interface CaseWaitingViewProps {
     caseCode: string;
@@ -14,7 +14,7 @@ export function CaseWaitingView({ caseCode, caseData }: CaseWaitingViewProps) {
     const shareUrl = typeof window !== 'undefined'
         ? `${window.location.origin}/case/${caseCode}`
         : `/case/${caseCode}`;
-    
+
     const copyToClipboard = async () => {
         try {
             await navigator.clipboard.writeText(shareUrl);
@@ -24,7 +24,7 @@ export function CaseWaitingView({ caseCode, caseData }: CaseWaitingViewProps) {
             console.error('Failed to copy:', err);
         }
     };
-    
+
     return (
         <div className="text-center">
             {/* Status Badge */}
@@ -32,7 +32,7 @@ export function CaseWaitingView({ caseCode, caseData }: CaseWaitingViewProps) {
                 <span className="w-2 h-2 bg-caution-amber rounded-full animate-pulse"></span>
                 <span>AWAITING RESPONSE</span>
             </div>
-            
+
             {/* Main Content */}
             <div className="mb-8">
                 <h1 className="text-4xl md:text-5xl font-black text-starlight-white mb-4">
@@ -42,7 +42,7 @@ export function CaseWaitingView({ caseCode, caseData }: CaseWaitingViewProps) {
                     The other party hasn&apos;t submitted their response yet
                 </p>
             </div>
-            
+
             {/* Status Card */}
             <div className="bg-charcoal-layer/50 border border-white/10 rounded-2xl p-8 mb-8">
                 {/* Case Info */}
@@ -56,7 +56,7 @@ export function CaseWaitingView({ caseCode, caseData }: CaseWaitingViewProps) {
                         <div className="text-caution-amber font-medium">{getTimeRemaining(caseData.expires_at)}</div>
                     </div>
                 </div>
-                
+
                 {/* Your Submission */}
                 <div className="text-left mb-6 p-4 bg-midnight-void/50 rounded-xl">
                     <div className="flex items-center gap-2 text-sm text-steel-grey mb-2">
@@ -66,7 +66,7 @@ export function CaseWaitingView({ caseCode, caseData }: CaseWaitingViewProps) {
                     <div className="text-starlight-white font-medium mb-1">{caseData.party_a_name}</div>
                     <div className="text-steel-grey text-sm line-clamp-2">{caseData.party_a_argument}</div>
                 </div>
-                
+
                 {/* Waiting Animation */}
                 <div className="flex items-center justify-center gap-4 py-6 mb-6">
                     <div className="w-12 h-12 bg-verdict-green/20 rounded-full flex items-center justify-center">
@@ -81,7 +81,7 @@ export function CaseWaitingView({ caseCode, caseData }: CaseWaitingViewProps) {
                         <span className="text-steel-grey text-xl">?</span>
                     </div>
                 </div>
-                
+
                 {/* Share Link Again */}
                 <div>
                     <p className="text-steel-grey text-sm mb-3">Share the link again:</p>
@@ -91,18 +91,17 @@ export function CaseWaitingView({ caseCode, caseData }: CaseWaitingViewProps) {
                         </div>
                         <button
                             onClick={copyToClipboard}
-                            className={`px-3 py-1.5 rounded-lg font-medium text-xs transition-all ${
-                                copied
-                                    ? 'bg-verdict-green text-white'
-                                    : 'bg-electric-violet/20 text-electric-violet hover:bg-electric-violet/30'
-                            }`}
+                            className={`px-3 py-1.5 rounded-lg font-medium text-xs transition-all ${copied
+                                ? 'bg-verdict-green text-white'
+                                : 'bg-electric-violet/20 text-electric-violet hover:bg-electric-violet/30'
+                                }`}
                         >
                             {copied ? '✓' : 'Copy'}
                         </button>
                     </div>
                 </div>
             </div>
-            
+
             {/* Refresh Hint */}
             <p className="text-steel-grey text-sm">
                 Refresh this page to check for updates

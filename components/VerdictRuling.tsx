@@ -3,7 +3,7 @@
 import { useRef, useState } from 'react';
 import type { Case, Verdict } from '@/types';
 import { JUDGE_PERSONAS, CATEGORY_OPTIONS, TONE_OPTIONS } from '@/types';
-import { formatDate } from '@/lib/db';
+import { formatDate } from '@/lib/utils';  
 
 interface VerdictRulingProps {
     caseData: Case;
@@ -14,39 +14,33 @@ export function VerdictRuling({ caseData, verdict }: VerdictRulingProps) {
     const rulingRef = useRef<HTMLDivElement>(null);
     const [isDownloading, setIsDownloading] = useState(false);
     const [expandedSection, setExpandedSection] = useState<'a' | 'b' | null>(null);
-    
+
     const judge = JUDGE_PERSONAS[caseData.category];
     const category = CATEGORY_OPTIONS.find(c => c.value === caseData.category);
     const tone = TONE_OPTIONS.find(t => t.value === caseData.tone);
-    
+
     const winnerName = verdict.winner === 'partyA'
         ? caseData.party_a_name
         : verdict.winner === 'partyB'
             ? caseData.party_b_name
             : null;
-    
-    const loserName = verdict.winner === 'partyA'
-        ? caseData.party_b_name
-        : verdict.winner === 'partyB'
-            ? caseData.party_a_name
-            : null;
-    
+
     const isDraw = verdict.winner === 'draw';
-    
+
     const downloadAsImage = async () => {
         if (!rulingRef.current) return;
         setIsDownloading(true);
-        
+
         try {
             const html2canvas = (await import('html2canvas')).default;
-            
+
             const canvas = await html2canvas(rulingRef.current, {
                 backgroundColor: '#0F172A',
                 scale: 2,
                 logging: false,
                 useCORS: true
             });
-            
+
             const link = document.createElement('a');
             link.download = `ruling-${caseData.code}.png`;
             link.href = canvas.toDataURL('image/png');
@@ -54,10 +48,10 @@ export function VerdictRuling({ caseData, verdict }: VerdictRulingProps) {
         } catch (error) {
             console.error('Failed to download:', error);
         }
-        
+
         setIsDownloading(false);
     };
-    
+
     return (
         <div>
             {/* Ruling Document */}
@@ -81,7 +75,7 @@ export function VerdictRuling({ caseData, verdict }: VerdictRulingProps) {
                         </div>
                     </div>
                 </div>
-                
+
                 {/* Case Info */}
                 <div className="p-6 border-b border-white/5">
                     <div className="grid grid-cols-2 gap-4 text-sm">
@@ -95,28 +89,25 @@ export function VerdictRuling({ caseData, verdict }: VerdictRulingProps) {
                         </div>
                     </div>
                 </div>
-                
+
                 {/* Main Verdict */}
-                <div className={`p-6 text-center border-b border-white/5 ${
-                    isDraw ? 'bg-caution-amber/5' : 'bg-verdict-green/5'
-                }`}>
+                <div className={`p-6 text-center border-b border-white/5 ${isDraw ? 'bg-caution-amber/5' : 'bg-verdict-green/5'
+                    }`}>
                     <div className="text-xs text-steel-grey uppercase tracking-wider mb-2">
                         Official Ruling
                     </div>
-                    <div className={`text-3xl font-black mb-2 ${
-                        isDraw ? 'text-caution-amber' : 'text-verdict-green'
-                    }`}>
+                    <div className={`text-3xl font-black mb-2 ${isDraw ? 'text-caution-amber' : 'text-verdict-green'
+                        }`}>
                         {isDraw ? '🤝 DRAW' : `🏆 ${winnerName?.toUpperCase()} WINS`}
                     </div>
                     <div className="text-steel-grey text-sm">
-                        Confidence Level: <span className={`font-bold ${
-                            verdict.confidence >= 80 ? 'text-verdict-green' :
-                            verdict.confidence >= 60 ? 'text-caution-amber' :
-                            'text-objection-red'
-                        }`}>{verdict.confidence}%</span>
+                        Confidence Level: <span className={`font-bold ${verdict.confidence >= 80 ? 'text-verdict-green' :
+                                verdict.confidence >= 60 ? 'text-caution-amber' :
+                                    'text-objection-red'
+                            }`}>{verdict.confidence}%</span>
                     </div>
                 </div>
-                
+
                 {/* Summary */}
                 <div className="p-6 border-b border-white/5">
                     <h3 className="text-starlight-white font-bold mb-3 flex items-center gap-2">
@@ -124,7 +115,7 @@ export function VerdictRuling({ caseData, verdict }: VerdictRulingProps) {
                     </h3>
                     <p className="text-steel-grey leading-relaxed">{verdict.summary}</p>
                 </div>
-                
+
                 {/* Reasoning */}
                 <div className="p-6 border-b border-white/5">
                     <h3 className="text-starlight-white font-bold mb-3 flex items-center gap-2">
@@ -132,22 +123,21 @@ export function VerdictRuling({ caseData, verdict }: VerdictRulingProps) {
                     </h3>
                     <p className="text-steel-grey leading-relaxed">{verdict.reasoning}</p>
                 </div>
-                
+
                 {/* Party Analysis - Collapsible */}
                 <div className="p-6 border-b border-white/5">
                     <h3 className="text-starlight-white font-bold mb-4 flex items-center gap-2">
                         <span>📊</span> Detailed Analysis
                     </h3>
-                    
+
                     {/* Party A */}
                     <div className="mb-4">
                         <button
                             onClick={() => setExpandedSection(expandedSection === 'a' ? null : 'a')}
-                            className={`w-full p-4 rounded-xl border transition-all text-left ${
-                                verdict.winner === 'partyA'
+                            className={`w-full p-4 rounded-xl border transition-all text-left ${verdict.winner === 'partyA'
                                     ? 'bg-verdict-green/10 border-verdict-green/30'
                                     : 'bg-charcoal-layer/30 border-white/5'
-                            }`}
+                                }`}
                         >
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-3">
@@ -162,7 +152,7 @@ export function VerdictRuling({ caseData, verdict }: VerdictRulingProps) {
                                 </svg>
                             </div>
                         </button>
-                        
+
                         {expandedSection === 'a' && (
                             <div className="mt-2 p-4 bg-charcoal-layer/20 rounded-xl space-y-3">
                                 {verdict.party_a_analysis.strengths?.length > 0 && (
@@ -198,16 +188,15 @@ export function VerdictRuling({ caseData, verdict }: VerdictRulingProps) {
                             </div>
                         )}
                     </div>
-                    
+
                     {/* Party B */}
                     <div>
                         <button
                             onClick={() => setExpandedSection(expandedSection === 'b' ? null : 'b')}
-                            className={`w-full p-4 rounded-xl border transition-all text-left ${
-                                verdict.winner === 'partyB'
+                            className={`w-full p-4 rounded-xl border transition-all text-left ${verdict.winner === 'partyB'
                                     ? 'bg-verdict-green/10 border-verdict-green/30'
                                     : 'bg-charcoal-layer/30 border-white/5'
-                            }`}
+                                }`}
                         >
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-3">
@@ -222,7 +211,7 @@ export function VerdictRuling({ caseData, verdict }: VerdictRulingProps) {
                                 </svg>
                             </div>
                         </button>
-                        
+
                         {expandedSection === 'b' && (
                             <div className="mt-2 p-4 bg-charcoal-layer/20 rounded-xl space-y-3">
                                 {verdict.party_b_analysis.strengths?.length > 0 && (
@@ -259,7 +248,7 @@ export function VerdictRuling({ caseData, verdict }: VerdictRulingProps) {
                         )}
                     </div>
                 </div>
-                
+
                 {/* Advice */}
                 <div className="p-6">
                     <h3 className="text-starlight-white font-bold mb-3 flex items-center gap-2">
@@ -267,7 +256,7 @@ export function VerdictRuling({ caseData, verdict }: VerdictRulingProps) {
                     </h3>
                     <p className="text-steel-grey leading-relaxed">{verdict.advice}</p>
                 </div>
-                
+
                 {/* Footer */}
                 <div className="p-4 bg-charcoal-layer/30 border-t border-white/5 text-center">
                     <div className="text-steel-grey text-xs">
@@ -278,7 +267,7 @@ export function VerdictRuling({ caseData, verdict }: VerdictRulingProps) {
                     </div>
                 </div>
             </div>
-            
+
             {/* Download Button */}
             <button
                 onClick={downloadAsImage}
