@@ -154,7 +154,9 @@ export default async function Home() {
                 <div className="text-center border-t border-dashed border-white/20 pt-4">
                   <div className="text-steel-grey text-xs">════════════════════</div>
                   <div className="text-steel-grey text-[10px] mt-2">Processed by AI Judge • Dec 10, 2024</div>
-                  <div className="text-steel-grey text-[10px]">rightitup.vercel.app</div>
+                  <div className="text-steel-grey text-[10px]">
+                    rightitup.vercel.app
+                  </div>
                 </div>
               </div>
             </div>
