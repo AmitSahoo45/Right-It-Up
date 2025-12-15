@@ -116,19 +116,37 @@ const JUDGE_PERSONAS: Record<DisputeCategory, { name: string; icon: string; syst
 // PROMPT BUILDERS
 // ============================================
 
-export function buildUserPrompt(dispute: Dispute): string {
+export function buildUserPrompt(dispute: Dispute, forGemini: boolean, systemPrompt: string): string {
+
+    if (forGemini) {
+        return `
+        ${systemPrompt}
+        
+        ## Dispute Category: ${dispute.category}
+
+        ## ${dispute.partyA.name}'s Argument:
+        ${dispute.partyA.argument}
+        ${dispute.partyA.evidence?.length ? `\nEvidence:\n${dispute.partyA.evidence.map((e, i) => `${i + 1}. ${e}`).join("\n")}` : ""}
+
+        ## ${dispute.partyB.name}'s Argument:
+        ${dispute.partyB.argument}
+        ${dispute.partyB.evidence?.length ? `\nEvidence:\n${dispute.partyB.evidence.map((e, i) => `${i + 1}. ${e}`).join("\n")}` : ""}
+
+        Analyze this dispute and render your verdict as JSON.`;
+    }
+
     return `
-## Dispute Category: ${dispute.category}
+        ## Dispute Category: ${dispute.category}
 
-## ${dispute.partyA.name}'s Argument:
-${dispute.partyA.argument}
-${dispute.partyA.evidence?.length ? `\nEvidence:\n${dispute.partyA.evidence.map((e, i) => `${i + 1}. ${e}`).join("\n")}` : ""}
+        ## ${dispute.partyA.name}'s Argument:
+        ${dispute.partyA.argument}
+        ${dispute.partyA.evidence?.length ? `\nEvidence:\n${dispute.partyA.evidence.map((e, i) => `${i + 1}. ${e}`).join("\n")}` : ""}
 
-## ${dispute.partyB.name}'s Argument:
-${dispute.partyB.argument}
-${dispute.partyB.evidence?.length ? `\nEvidence:\n${dispute.partyB.evidence.map((e, i) => `${i + 1}. ${e}`).join("\n")}` : ""}
+        ## ${dispute.partyB.name}'s Argument:
+        ${dispute.partyB.argument}
+        ${dispute.partyB.evidence?.length ? `\nEvidence:\n${dispute.partyB.evidence.map((e, i) => `${i + 1}. ${e}`).join("\n")}` : ""}
 
-Analyze this dispute and render your verdict as JSON.`;
+        Analyze this dispute and render your verdict as JSON.`;
 }
 
 export function buildSystemPrompt(category: DisputeCategory = 'general', tone: VerdictTone = 'neutral'): string {

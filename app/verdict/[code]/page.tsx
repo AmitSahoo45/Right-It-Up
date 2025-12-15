@@ -11,28 +11,26 @@ interface VerdictPageProps {
 
 export default async function VerdictPage({ params }: VerdictPageProps) {
     const { code } = await params;
-    
+
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
-    
+
     // Get case with verdict
     const result = await getCaseWithVerdict(code);
-    
+
     if (!result) {
         notFound();
     }
-    
+
     const { case: caseData, verdict } = result;
-    
-    // If no verdict yet, redirect to case page
-    if (!verdict || caseData.status !== 'complete') {
+
+    if (!verdict || caseData.status !== 'complete')  
         redirect(`/case/${code}`);
-    }
-    
+
     return (
         <div className="min-h-screen">
             <Navbar user={user} />
-            
+
             <main className="pt-28 md:pt-32 px-4 md:px-10 pb-20">
                 <div className="max-w-4xl mx-auto">
                     {/* Header */}
@@ -48,7 +46,7 @@ export default async function VerdictPage({ params }: VerdictPageProps) {
                             Case <span className="text-electric-violet font-mono">{code}</span> has been decided
                         </p>
                     </div>
-                    
+
                     {/* Two-column layout on desktop */}
                     <div className="grid lg:grid-cols-2 gap-8">
                         {/* Receipt Style (Left) */}
@@ -60,7 +58,7 @@ export default async function VerdictPage({ params }: VerdictPageProps) {
                             </h2>
                             <VerdictReceipt caseData={caseData} verdict={verdict} />
                         </div>
-                        
+
                         {/* Detailed Ruling (Right) */}
                         <div>
                             <h2 className="text-starlight-white font-bold mb-4 flex items-center gap-2">
@@ -71,7 +69,7 @@ export default async function VerdictPage({ params }: VerdictPageProps) {
                             <VerdictRuling caseData={caseData} verdict={verdict} />
                         </div>
                     </div>
-                    
+
                     {/* New Case CTA */}
                     <div className="mt-12 text-center">
                         <div className="inline-block p-8 bg-charcoal-layer/30 border border-white/5 rounded-2xl">

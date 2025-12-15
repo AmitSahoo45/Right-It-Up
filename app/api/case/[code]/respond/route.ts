@@ -192,7 +192,7 @@ export async function POST(
                 advice: aiResponse.verdict.advice,
                 ai_provider: 'gemini' // Default, can be made dynamic
             });
-            
+
             // Record usage for BOTH parties
             await recordUsage(
                 caseData.id,
@@ -204,7 +204,7 @@ export async function POST(
                 user?.id || null,
                 clientIp
             );
-            
+
             // Mark case as complete
             await updateCaseStatus(caseData.id, 'complete');
             

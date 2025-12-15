@@ -115,15 +115,23 @@ export const submitResponse = async (
 export async function updateCaseStatus(caseId: string, status: CaseStatus): Promise<void> {
     const supabase = await createClient();
 
-    const updateData: Partial<Case> = { status };
-    if (status === 'complete') {
-        updateData.completed_at = new Date().toISOString();
-    }
+    // ============================================
+    // OLD WAY - kept for reference
+    // const updateData: Partial<Case> = { status };
+    // if (status === 'complete') {
+    //     updateData.completed_at = new Date().toISOString();
+    // }
 
-    const { error } = await supabase
-        .from('cases')
-        .update(updateData)
-        .eq('id', caseId);
+    // const { error } = await supabase
+    //     .from('cases')
+    //     .update(updateData)
+    //     .eq('id', caseId);
+    // ============================================
+
+    const { error } = await supabase.rpc('update_case_status', {
+        p_case_id: caseId,
+        p_status: status
+    });
 
     if (error) throw new Error(`Failed to update case status: ${error.message}`);
 }
