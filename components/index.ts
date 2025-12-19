@@ -1,6 +1,8 @@
 // Core UI Components
 export { Navbar } from './Navbar';
+export { ClientNavbar } from './ClientNavbar';
 export { SignOut } from './Buttons/SignOut';
+export { Providers } from './Providers';
 
 // Form Components
 export { CaseForm } from './CaseForm';

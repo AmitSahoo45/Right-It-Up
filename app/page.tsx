@@ -1,14 +1,10 @@
-import { createClient } from '@/utils/supabase/server'
-import { Navbar } from '@/components/Navbar'
+import { ClientNavbar } from '@/components/ClientNavbar'
 import Link from 'next/link'
 
-export default async function Home() {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-
+export default function Home() {
   return (
     <div className="min-h-screen overflow-x-hidden">
-      <Navbar user={user} />
+      <ClientNavbar />
 
       {/* Hero Section */}
       <main className="pt-28 md:pt-32 px-4 md:px-10">

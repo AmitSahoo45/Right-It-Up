@@ -1,26 +1,33 @@
-import { createClient } from '@/utils/supabase/server';
-import { Navbar } from '@/components/Navbar';
+'use client';
+
+import { ClientNavbar } from '@/components/ClientNavbar';
 import { CaseForm } from '@/components/CaseForm';
-import { checkQuota } from '@/lib/db';
-import { headers } from 'next/headers';
+import { useAuth } from '@/contexts/AuthContext';
 import Link from 'next/link';
 
-export default async function SubmitPage() {
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
+export default function SubmitPage() {
+    const { user, quota, isLoading } = useAuth();
 
-    // Get client IP for guest quota check
-    const headersList = await headers();
-    const clientIp = headersList.get('x-forwarded-for')?.split(',')[0] ||
-        headersList.get('x-real-ip') ||
-        '0.0.0.0';
-
-    // Check quota
-    const quota = await checkQuota(user?.id || null, clientIp);
+    if (isLoading) {
+        return (
+            <div className="min-h-screen">
+                <ClientNavbar />
+                <main className="pt-28 md:pt-32 px-4 md:px-10 pb-20">
+                    <div className="max-w-2xl mx-auto text-center">
+                        <div className="animate-pulse">
+                            <div className="h-8 bg-charcoal-layer/50 rounded-full w-32 mx-auto mb-4"></div>
+                            <div className="h-12 bg-charcoal-layer/50 rounded-xl w-64 mx-auto mb-4"></div>
+                            <div className="h-6 bg-charcoal-layer/50 rounded-lg w-48 mx-auto"></div>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen">
-            <Navbar user={user} quota={quota} />
+            <ClientNavbar />
 
             <main className="pt-28 md:pt-32 px-4 md:px-10 pb-20">
                 <div className="max-w-2xl mx-auto">

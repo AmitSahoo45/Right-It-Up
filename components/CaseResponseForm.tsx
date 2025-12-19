@@ -4,38 +4,37 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { EvidenceUploader } from './EvidenceUploader';
-import type { Case, QuotaCheck, ResponseFormData } from '@/types';
-import type { User } from '@supabase/supabase-js';
+import { useAuth } from '@/contexts/AuthContext';
+import type { Case, ResponseFormData } from '@/types';
 import { CATEGORY_OPTIONS, TONE_OPTIONS, JUDGE_PERSONAS } from '@/types';
 
 interface CaseResponseFormProps {
     caseCode: string;
     caseData: Case;
-    quota: QuotaCheck;
-    user: User | null;
 }
 
-export function CaseResponseForm({ caseCode, caseData, quota, user }: CaseResponseFormProps) {
+export function CaseResponseForm({ caseCode, caseData }: CaseResponseFormProps) {
     const router = useRouter();
+    const { user, quota, refreshQuota } = useAuth();
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    
+
     const [formData, setFormData] = useState<ResponseFormData>({
         name: '',
         argument: '',
         evidenceText: [],
         evidenceImages: []
     });
-    
+
     const category = CATEGORY_OPTIONS.find(c => c.value === caseData.category);
     const tone = TONE_OPTIONS.find(t => t.value === caseData.tone);
     const judge = JUDGE_PERSONAS[caseData.category];
-    
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError(null);
         setIsSubmitting(true);
-        
+
         try {
             const response = await fetch(`/api/case/${caseCode}/respond`, {
                 method: 'POST',
@@ -47,32 +46,35 @@ export function CaseResponseForm({ caseCode, caseData, quota, user }: CaseRespon
                     party_b_evidence_images: formData.evidenceImages
                 })
             });
-            
+
             const data = await response.json();
-            
+
             if (!response.ok || !data.success) {
                 setError(data.error || 'Failed to submit response');
                 setIsSubmitting(false);
                 return;
             }
-            
+
+            // Refresh quota after successful submission
+            await refreshQuota();
+
             // Redirect to verdict page
             if (data.verdict_url) {
                 router.push(data.verdict_url);
             } else {
                 router.push(`/verdict/${caseCode}`);
             }
-            
+
         } catch (err) {
             console.error('Submit error:', err);
             setError('Something went wrong. Please try again.');
             setIsSubmitting(false);
         }
     };
-    
+
     const characterCount = formData.argument.length;
     const isValidLength = characterCount >= 20 && characterCount <= 5000;
-    
+
     // Check if user can submit
     if (!quota.can_use) {
         return (
@@ -97,7 +99,7 @@ export function CaseResponseForm({ caseCode, caseData, quota, user }: CaseRespon
             </div>
         );
     }
-    
+
     return (
         <div>
             {/* Header */}
@@ -113,7 +115,7 @@ export function CaseResponseForm({ caseCode, caseData, quota, user }: CaseRespon
                     <span className="text-electric-violet font-bold">{caseData.party_a_name}</span> has filed a case against you
                 </p>
             </div>
-            
+
             {/* Case Info Card */}
             <div className="bg-charcoal-layer/50 border border-white/10 rounded-2xl p-6 mb-8">
                 <div className="flex items-center justify-between mb-4">
@@ -136,7 +138,7 @@ export function CaseResponseForm({ caseCode, caseData, quota, user }: CaseRespon
                         </div>
                     </div>
                 </div>
-                
+
                 {/* No Peeking Notice */}
                 <div className="p-4 bg-caution-amber/10 border border-caution-amber/30 rounded-xl">
                     <div className="flex items-start gap-3">
@@ -144,14 +146,14 @@ export function CaseResponseForm({ caseCode, caseData, quota, user }: CaseRespon
                         <div>
                             <div className="text-caution-amber font-bold text-sm mb-1">No Peeking!</div>
                             <div className="text-steel-grey text-sm">
-                                You can&apos;t see {caseData.party_a_name}&apos;s argument until both sides submit. 
+                                You can&apos;t see {caseData.party_a_name}&apos;s argument until both sides submit.
                                 This ensures fairness!
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            
+
             {/* Response Form */}
             <form onSubmit={handleSubmit} className="space-y-6">
                 {/* Error Display */}
@@ -160,7 +162,7 @@ export function CaseResponseForm({ caseCode, caseData, quota, user }: CaseRespon
                         <p className="text-objection-red text-sm">{error}</p>
                     </div>
                 )}
-                
+
                 {/* Name Input */}
                 <div>
                     <label htmlFor="name" className="block text-sm font-medium text-steel-grey mb-2">
@@ -177,7 +179,7 @@ export function CaseResponseForm({ caseCode, caseData, quota, user }: CaseRespon
                         maxLength={100}
                     />
                 </div>
-                
+
                 {/* Argument Textarea */}
                 <div>
                     <label htmlFor="argument" className="block text-sm font-medium text-steel-grey mb-2">
@@ -202,7 +204,7 @@ export function CaseResponseForm({ caseCode, caseData, quota, user }: CaseRespon
                         </span>
                     </div>
                 </div>
-                
+
                 {/* Evidence Section */}
                 <EvidenceUploader
                     textEvidence={formData.evidenceText}
@@ -210,7 +212,7 @@ export function CaseResponseForm({ caseCode, caseData, quota, user }: CaseRespon
                     onTextChange={(evidence) => setFormData(prev => ({ ...prev, evidenceText: evidence }))}
                     onImageChange={(evidence) => setFormData(prev => ({ ...prev, evidenceImages: evidence }))}
                 />
-                
+
                 {/* Submit Button */}
                 <button
                     type="submit"
@@ -231,7 +233,7 @@ export function CaseResponseForm({ caseCode, caseData, quota, user }: CaseRespon
                         </span>
                     )}
                 </button>
-                
+
                 {/* Quota Info */}
                 <div className="text-center">
                     <p className="text-steel-grey text-xs">

@@ -3,7 +3,23 @@
 import { useRef, useState } from 'react';
 import type { Case, Verdict } from '@/types';
 import { JUDGE_PERSONAS, CATEGORY_OPTIONS, TONE_OPTIONS } from '@/types';
-import { formatDate } from '@/lib/utils';  
+import { formatDate } from '@/lib/utils';
+
+// Color constants for html2canvas compatibility (no oklab)
+const COLORS = {
+    background: '#0F172A',
+    charcoalLayer: '#1E293B',
+    starlightWhite: '#F8FAFC',
+    steelGrey: '#94A3B8',
+    electricViolet: '#7C3AED',
+    cyberBlue: '#3B82F6',
+    verdictGreen: '#10B981',
+    objectionRed: '#EF4444',
+    cautionAmber: '#F59E0B',
+    borderLight: 'rgba(255, 255, 255, 0.2)',
+    borderDark: 'rgba(255, 255, 255, 0.1)',
+    borderFaint: 'rgba(255, 255, 255, 0.05)',
+};
 
 interface VerdictRulingProps {
     caseData: Case;
@@ -35,7 +51,7 @@ export function VerdictRuling({ caseData, verdict }: VerdictRulingProps) {
             const html2canvas = (await import('html2canvas')).default;
 
             const canvas = await html2canvas(rulingRef.current, {
-                backgroundColor: '#0F172A',
+                backgroundColor: COLORS.background,
                 scale: 2,
                 logging: false,
                 useCORS: true
@@ -57,130 +73,149 @@ export function VerdictRuling({ caseData, verdict }: VerdictRulingProps) {
             {/* Ruling Document */}
             <div
                 ref={rulingRef}
-                className="bg-midnight-void border border-white/10 rounded-2xl overflow-hidden"
+                style={{
+                    backgroundColor: COLORS.background,
+                    border: `1px solid ${COLORS.borderDark}`,
+                    borderRadius: '16px',
+                    overflow: 'hidden',
+                    fontFamily: 'Inter, system-ui, sans-serif',
+                }}
             >
                 {/* Header */}
-                <div className="bg-gradient-to-r from-electric-violet/20 to-cyber-blue/20 p-6 border-b border-white/10">
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                            <div className="text-4xl">{judge.icon}</div>
+                <div style={{
+                    background: `linear-gradient(to right, rgba(124, 58, 237, 0.2), rgba(59, 130, 246, 0.2))`,
+                    padding: '24px',
+                    borderBottom: `1px solid ${COLORS.borderDark}`,
+                }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                            <div style={{ fontSize: '32px' }}>{judge.icon}</div>
                             <div>
-                                <div className="text-starlight-white font-bold">{judge.name}</div>
-                                <div className="text-steel-grey text-sm">Presiding</div>
+                                <div style={{ color: COLORS.starlightWhite, fontWeight: 'bold' }}>{judge.name}</div>
+                                <div style={{ color: COLORS.steelGrey, fontSize: '14px' }}>Presiding</div>
                             </div>
                         </div>
-                        <div className="text-right">
-                            <div className="text-xs text-steel-grey">CASE #{caseData.code}</div>
-                            <div className="text-xs text-steel-grey">{formatDate(verdict.created_at)}</div>
+                        <div style={{ textAlign: 'right' }}>
+                            <div style={{ fontSize: '12px', color: COLORS.steelGrey }}>CASE #{caseData.code}</div>
+                            <div style={{ fontSize: '12px', color: COLORS.steelGrey }}>{formatDate(verdict.created_at)}</div>
                         </div>
                     </div>
                 </div>
 
                 {/* Case Info */}
-                <div className="p-6 border-b border-white/5">
-                    <div className="grid grid-cols-2 gap-4 text-sm">
+                <div style={{ padding: '24px', borderBottom: `1px solid ${COLORS.borderFaint}` }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', fontSize: '14px' }}>
                         <div>
-                            <span className="text-steel-grey">Category:</span>
-                            <span className="ml-2 text-starlight-white">{category?.icon} {category?.label}</span>
+                            <span style={{ color: COLORS.steelGrey }}>Category:</span>
+                            <span style={{ marginLeft: '8px', color: COLORS.starlightWhite }}>{category?.icon} {category?.label}</span>
                         </div>
                         <div>
-                            <span className="text-steel-grey">Tone:</span>
-                            <span className="ml-2 text-starlight-white">{tone?.icon} {tone?.label}</span>
+                            <span style={{ color: COLORS.steelGrey }}>Tone:</span>
+                            <span style={{ marginLeft: '8px', color: COLORS.starlightWhite }}>{tone?.icon} {tone?.label}</span>
                         </div>
                     </div>
                 </div>
 
                 {/* Main Verdict */}
-                <div className={`p-6 text-center border-b border-white/5 ${isDraw ? 'bg-caution-amber/5' : 'bg-verdict-green/5'
-                    }`}>
-                    <div className="text-xs text-steel-grey uppercase tracking-wider mb-2">
+                <div style={{
+                    padding: '24px',
+                    textAlign: 'center',
+                    borderBottom: `1px solid ${COLORS.borderFaint}`,
+                    backgroundColor: isDraw ? 'rgba(245, 158, 11, 0.05)' : 'rgba(16, 185, 129, 0.05)',
+                }}>
+                    <div style={{ fontSize: '12px', color: COLORS.steelGrey, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '8px' }}>
                         Official Ruling
                     </div>
-                    <div className={`text-3xl font-black mb-2 ${isDraw ? 'text-caution-amber' : 'text-verdict-green'
-                        }`}>
+                    <div style={{ fontSize: '28px', fontWeight: '900', marginBottom: '8px', color: isDraw ? COLORS.cautionAmber : COLORS.verdictGreen }}>
                         {isDraw ? '🤝 DRAW' : `🏆 ${winnerName?.toUpperCase()} WINS`}
                     </div>
-                    <div className="text-steel-grey text-sm">
-                        Confidence Level: <span className={`font-bold ${verdict.confidence >= 80 ? 'text-verdict-green' :
-                                verdict.confidence >= 60 ? 'text-caution-amber' :
-                                    'text-objection-red'
-                            }`}>{verdict.confidence}%</span>
+                    <div style={{ color: COLORS.steelGrey, fontSize: '14px' }}>
+                        Confidence Level: <span style={{
+                            fontWeight: 'bold',
+                            color: verdict.confidence >= 80 ? COLORS.verdictGreen :
+                                verdict.confidence >= 60 ? COLORS.cautionAmber : COLORS.objectionRed
+                        }}>{verdict.confidence}%</span>
                     </div>
                 </div>
 
                 {/* Summary */}
-                <div className="p-6 border-b border-white/5">
-                    <h3 className="text-starlight-white font-bold mb-3 flex items-center gap-2">
+                <div style={{ padding: '24px', borderBottom: `1px solid ${COLORS.borderFaint}` }}>
+                    <h3 style={{ color: COLORS.starlightWhite, fontWeight: 'bold', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px', margin: '0 0 12px 0' }}>
                         <span>📋</span> Summary
                     </h3>
-                    <p className="text-steel-grey leading-relaxed">{verdict.summary}</p>
+                    <p style={{ color: COLORS.steelGrey, lineHeight: '1.6', margin: 0 }}>{verdict.summary}</p>
                 </div>
 
                 {/* Reasoning */}
-                <div className="p-6 border-b border-white/5">
-                    <h3 className="text-starlight-white font-bold mb-3 flex items-center gap-2">
+                <div style={{ padding: '24px', borderBottom: `1px solid ${COLORS.borderFaint}` }}>
+                    <h3 style={{ color: COLORS.starlightWhite, fontWeight: 'bold', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px', margin: '0 0 12px 0' }}>
                         <span>🧠</span> Reasoning
                     </h3>
-                    <p className="text-steel-grey leading-relaxed">{verdict.reasoning}</p>
+                    <p style={{ color: COLORS.steelGrey, lineHeight: '1.6', margin: 0 }}>{verdict.reasoning}</p>
                 </div>
 
                 {/* Party Analysis - Collapsible */}
-                <div className="p-6 border-b border-white/5">
-                    <h3 className="text-starlight-white font-bold mb-4 flex items-center gap-2">
+                <div style={{ padding: '24px', borderBottom: `1px solid ${COLORS.borderFaint}` }}>
+                    <h3 style={{ color: COLORS.starlightWhite, fontWeight: 'bold', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px', margin: '0 0 16px 0' }}>
                         <span>📊</span> Detailed Analysis
                     </h3>
 
                     {/* Party A */}
-                    <div className="mb-4">
+                    <div style={{ marginBottom: '16px' }}>
                         <button
                             onClick={() => setExpandedSection(expandedSection === 'a' ? null : 'a')}
-                            className={`w-full p-4 rounded-xl border transition-all text-left ${verdict.winner === 'partyA'
-                                    ? 'bg-verdict-green/10 border-verdict-green/30'
-                                    : 'bg-charcoal-layer/30 border-white/5'
-                                }`}
+                            style={{
+                                width: '100%',
+                                padding: '16px',
+                                borderRadius: '12px',
+                                border: `1px solid ${verdict.winner === 'partyA' ? 'rgba(16, 185, 129, 0.3)' : COLORS.borderFaint}`,
+                                backgroundColor: verdict.winner === 'partyA' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(30, 41, 59, 0.3)',
+                                cursor: 'pointer',
+                                textAlign: 'left',
+                            }}
                         >
-                            <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-3">
-                                    <span className="text-xl">{verdict.winner === 'partyA' ? '🏆' : '👤'}</span>
+                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                    <span style={{ fontSize: '20px' }}>{verdict.winner === 'partyA' ? '🏆' : '👤'}</span>
                                     <div>
-                                        <div className="text-starlight-white font-medium">{caseData.party_a_name}</div>
-                                        <div className="text-steel-grey text-sm">Score: {verdict.party_a_score}/100</div>
+                                        <div style={{ color: COLORS.starlightWhite, fontWeight: '500' }}>{caseData.party_a_name}</div>
+                                        <div style={{ color: COLORS.steelGrey, fontSize: '14px' }}>Score: {verdict.party_a_score}/100</div>
                                     </div>
                                 </div>
-                                <svg className={`w-5 h-5 text-steel-grey transition-transform ${expandedSection === 'a' ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <svg style={{ width: '20px', height: '20px', color: COLORS.steelGrey, transform: expandedSection === 'a' ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                                 </svg>
                             </div>
                         </button>
 
                         {expandedSection === 'a' && (
-                            <div className="mt-2 p-4 bg-charcoal-layer/20 rounded-xl space-y-3">
+                            <div style={{ marginTop: '8px', padding: '16px', backgroundColor: 'rgba(30, 41, 59, 0.2)', borderRadius: '12px' }}>
                                 {verdict.party_a_analysis.strengths?.length > 0 && (
-                                    <div>
-                                        <div className="text-verdict-green text-xs font-medium mb-1">✓ Strengths</div>
-                                        <ul className="text-steel-grey text-sm space-y-1">
+                                    <div style={{ marginBottom: '12px' }}>
+                                        <div style={{ color: COLORS.verdictGreen, fontSize: '12px', fontWeight: '500', marginBottom: '4px' }}>✓ Strengths</div>
+                                        <ul style={{ color: COLORS.steelGrey, fontSize: '14px', margin: 0, paddingLeft: '0', listStyle: 'none' }}>
                                             {verdict.party_a_analysis.strengths.map((s, i) => (
-                                                <li key={i}>• {s}</li>
+                                                <li key={i} style={{ marginBottom: '4px' }}>• {s}</li>
                                             ))}
                                         </ul>
                                     </div>
                                 )}
                                 {verdict.party_a_analysis.weaknesses?.length > 0 && (
-                                    <div>
-                                        <div className="text-objection-red text-xs font-medium mb-1">✗ Weaknesses</div>
-                                        <ul className="text-steel-grey text-sm space-y-1">
+                                    <div style={{ marginBottom: '12px' }}>
+                                        <div style={{ color: COLORS.objectionRed, fontSize: '12px', fontWeight: '500', marginBottom: '4px' }}>✗ Weaknesses</div>
+                                        <ul style={{ color: COLORS.steelGrey, fontSize: '14px', margin: 0, paddingLeft: '0', listStyle: 'none' }}>
                                             {verdict.party_a_analysis.weaknesses.map((w, i) => (
-                                                <li key={i}>• {w}</li>
+                                                <li key={i} style={{ marginBottom: '4px' }}>• {w}</li>
                                             ))}
                                         </ul>
                                     </div>
                                 )}
                                 {verdict.party_a_analysis.fallacies?.length > 0 && (
                                     <div>
-                                        <div className="text-caution-amber text-xs font-medium mb-1">⚠ Fallacies</div>
-                                        <ul className="text-steel-grey text-sm space-y-1">
+                                        <div style={{ color: COLORS.cautionAmber, fontSize: '12px', fontWeight: '500', marginBottom: '4px' }}>⚠ Fallacies</div>
+                                        <ul style={{ color: COLORS.steelGrey, fontSize: '14px', margin: 0, paddingLeft: '0', listStyle: 'none' }}>
                                             {verdict.party_a_analysis.fallacies.map((f, i) => (
-                                                <li key={i}>• {f}</li>
+                                                <li key={i} style={{ marginBottom: '4px' }}>• {f}</li>
                                             ))}
                                         </ul>
                                     </div>
@@ -193,53 +228,58 @@ export function VerdictRuling({ caseData, verdict }: VerdictRulingProps) {
                     <div>
                         <button
                             onClick={() => setExpandedSection(expandedSection === 'b' ? null : 'b')}
-                            className={`w-full p-4 rounded-xl border transition-all text-left ${verdict.winner === 'partyB'
-                                    ? 'bg-verdict-green/10 border-verdict-green/30'
-                                    : 'bg-charcoal-layer/30 border-white/5'
-                                }`}
+                            style={{
+                                width: '100%',
+                                padding: '16px',
+                                borderRadius: '12px',
+                                border: `1px solid ${verdict.winner === 'partyB' ? 'rgba(16, 185, 129, 0.3)' : COLORS.borderFaint}`,
+                                backgroundColor: verdict.winner === 'partyB' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(30, 41, 59, 0.3)',
+                                cursor: 'pointer',
+                                textAlign: 'left',
+                            }}
                         >
-                            <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-3">
-                                    <span className="text-xl">{verdict.winner === 'partyB' ? '🏆' : '👤'}</span>
+                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                    <span style={{ fontSize: '20px' }}>{verdict.winner === 'partyB' ? '🏆' : '👤'}</span>
                                     <div>
-                                        <div className="text-starlight-white font-medium">{caseData.party_b_name}</div>
-                                        <div className="text-steel-grey text-sm">Score: {verdict.party_b_score}/100</div>
+                                        <div style={{ color: COLORS.starlightWhite, fontWeight: '500' }}>{caseData.party_b_name}</div>
+                                        <div style={{ color: COLORS.steelGrey, fontSize: '14px' }}>Score: {verdict.party_b_score}/100</div>
                                     </div>
                                 </div>
-                                <svg className={`w-5 h-5 text-steel-grey transition-transform ${expandedSection === 'b' ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <svg style={{ width: '20px', height: '20px', color: COLORS.steelGrey, transform: expandedSection === 'b' ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                                 </svg>
                             </div>
                         </button>
 
                         {expandedSection === 'b' && (
-                            <div className="mt-2 p-4 bg-charcoal-layer/20 rounded-xl space-y-3">
+                            <div style={{ marginTop: '8px', padding: '16px', backgroundColor: 'rgba(30, 41, 59, 0.2)', borderRadius: '12px' }}>
                                 {verdict.party_b_analysis.strengths?.length > 0 && (
-                                    <div>
-                                        <div className="text-verdict-green text-xs font-medium mb-1">✓ Strengths</div>
-                                        <ul className="text-steel-grey text-sm space-y-1">
+                                    <div style={{ marginBottom: '12px' }}>
+                                        <div style={{ color: COLORS.verdictGreen, fontSize: '12px', fontWeight: '500', marginBottom: '4px' }}>✓ Strengths</div>
+                                        <ul style={{ color: COLORS.steelGrey, fontSize: '14px', margin: 0, paddingLeft: '0', listStyle: 'none' }}>
                                             {verdict.party_b_analysis.strengths.map((s, i) => (
-                                                <li key={i}>• {s}</li>
+                                                <li key={i} style={{ marginBottom: '4px' }}>• {s}</li>
                                             ))}
                                         </ul>
                                     </div>
                                 )}
                                 {verdict.party_b_analysis.weaknesses?.length > 0 && (
-                                    <div>
-                                        <div className="text-objection-red text-xs font-medium mb-1">✗ Weaknesses</div>
-                                        <ul className="text-steel-grey text-sm space-y-1">
+                                    <div style={{ marginBottom: '12px' }}>
+                                        <div style={{ color: COLORS.objectionRed, fontSize: '12px', fontWeight: '500', marginBottom: '4px' }}>✗ Weaknesses</div>
+                                        <ul style={{ color: COLORS.steelGrey, fontSize: '14px', margin: 0, paddingLeft: '0', listStyle: 'none' }}>
                                             {verdict.party_b_analysis.weaknesses.map((w, i) => (
-                                                <li key={i}>• {w}</li>
+                                                <li key={i} style={{ marginBottom: '4px' }}>• {w}</li>
                                             ))}
                                         </ul>
                                     </div>
                                 )}
                                 {verdict.party_b_analysis.fallacies?.length > 0 && (
                                     <div>
-                                        <div className="text-caution-amber text-xs font-medium mb-1">⚠ Fallacies</div>
-                                        <ul className="text-steel-grey text-sm space-y-1">
+                                        <div style={{ color: COLORS.cautionAmber, fontSize: '12px', fontWeight: '500', marginBottom: '4px' }}>⚠ Fallacies</div>
+                                        <ul style={{ color: COLORS.steelGrey, fontSize: '14px', margin: 0, paddingLeft: '0', listStyle: 'none' }}>
                                             {verdict.party_b_analysis.fallacies.map((f, i) => (
-                                                <li key={i}>• {f}</li>
+                                                <li key={i} style={{ marginBottom: '4px' }}>• {f}</li>
                                             ))}
                                         </ul>
                                     </div>
@@ -250,19 +290,24 @@ export function VerdictRuling({ caseData, verdict }: VerdictRulingProps) {
                 </div>
 
                 {/* Advice */}
-                <div className="p-6">
-                    <h3 className="text-starlight-white font-bold mb-3 flex items-center gap-2">
+                <div style={{ padding: '24px' }}>
+                    <h3 style={{ color: COLORS.starlightWhite, fontWeight: 'bold', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px', margin: '0 0 12px 0' }}>
                         <span>💡</span> Advice
                     </h3>
-                    <p className="text-steel-grey leading-relaxed">{verdict.advice}</p>
+                    <p style={{ color: COLORS.steelGrey, lineHeight: '1.6', margin: 0 }}>{verdict.advice}</p>
                 </div>
 
                 {/* Footer */}
-                <div className="p-4 bg-charcoal-layer/30 border-t border-white/5 text-center">
-                    <div className="text-steel-grey text-xs">
+                <div style={{
+                    padding: '16px',
+                    backgroundColor: 'rgba(30, 41, 59, 0.3)',
+                    borderTop: `1px solid ${COLORS.borderFaint}`,
+                    textAlign: 'center',
+                }}>
+                    <div style={{ color: COLORS.steelGrey, fontSize: '12px' }}>
                         This verdict is final • Generated by AI • For entertainment purposes only
                     </div>
-                    <div className="text-steel-grey text-[10px] mt-1">
+                    <div style={{ color: COLORS.steelGrey, fontSize: '10px', marginTop: '4px' }}>
                         rightitup.vercel.app
                     </div>
                 </div>
