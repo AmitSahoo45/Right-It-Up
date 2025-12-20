@@ -88,8 +88,6 @@ export default async function CasePage({ params, searchParams }: CasePageProps) 
                         <CaseResponseForm
                             caseCode={code}
                             caseData={caseData}
-                            quota={quota}
-                            user={user}
                         />
                     )}
                     
