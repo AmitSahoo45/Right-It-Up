@@ -8,19 +8,20 @@ export const generateVerdictFromAnthropic = async (
     tone: VerdictTone = 'neutral'
 ) => {
     try {
-        const client = new Anthropic();
-        const userPrompt = buildUserPrompt(dispute);
-        const systemPrompt = buildSystemPrompt(category, tone);
+        // const client = new Anthropic();
+        // const userPrompt = buildUserPrompt(dispute);
+        // const systemPrompt = buildSystemPrompt(category, tone);
 
-        const response = await client.messages.create({
-            model: "claude-3-5-haiku-20241022",
-            max_tokens: 2000,
-            system: systemPrompt,
-            messages: [{ role: "user", content: userPrompt }],
-        });
+        // const response = await client.messages.create({
+        //     model: "claude-3-5-haiku-20241022",
+        //     max_tokens: 2000,
+        //     system: systemPrompt,
+        //     messages: [{ role: "user", content: userPrompt }],
+        // });
 
-        const text = response.content[0].type === "text" ? response.content[0].text : "";
-        return JSON.parse(text);
+        // const text = response.content[0].type === "text" ? response.content[0].text : "";
+        // return JSON.parse(text);
+        return {}; // Placeholder return since Anthropic SDK usage is commented out
     } catch (error) {
         console.error("Error generating verdict from Anthropic:", error);
         throw error;

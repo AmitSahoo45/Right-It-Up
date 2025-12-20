@@ -10,20 +10,22 @@ export const generateVerdictFromGroq = async (
     tone: VerdictTone = 'neutral'
 ) => {
     try {
-        const userPrompt = buildUserPrompt(dispute);
-        const systemPrompt = buildSystemPrompt(category, tone);
+        // const userPrompt = buildUserPrompt(dispute);
+        // const systemPrompt = buildSystemPrompt(category, tone);
 
-        const response = await groq.chat.completions.create({
-            model: "llama-3.3-70b-versatile",
-            messages: [
-                { role: "system", content: systemPrompt },
-                { role: "user", content: userPrompt }
-            ],
-            temperature: 0.7,
-            response_format: { type: "json_object" }
-        });
+        // const response = await groq.chat.completions.create({
+        //     model: "llama-3.3-70b-versatile",
+        //     messages: [
+        //         { role: "system", content: systemPrompt },
+        //         { role: "user", content: userPrompt }
+        //     ],
+        //     temperature: 0.7,
+        //     response_format: { type: "json_object" }
+        // });
 
-        return JSON.parse(response.choices[0].message.content || "{}");
+        // return JSON.parse(response.choices[0].message.content || "{}");
+
+        return {}; // Placeholder return since Groq SDK usage is commented out
     } catch (error) {
         console.error("Error generating verdict from Groq:", error);
         throw error;
