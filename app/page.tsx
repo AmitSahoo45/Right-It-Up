@@ -117,10 +117,10 @@ export default function Home() {
                 <div className="space-y-2 mb-4">
                   <div className="flex justify-between items-center">
                     <span className="text-steel-grey">Akansha&apos;s Score:</span>
-                    <span className="text-verdict-green font-bold">78/100</span>
+                    <span className="text-verdict-green font-bold">98/100</span>
                   </div>
                   <div className="w-full bg-charcoal-layer rounded-full h-2">
-                    <div className="bg-gradient-to-r from-verdict-green to-cyber-blue h-2 rounded-full" style={{ width: '78%' }}></div>
+                    <div className="bg-gradient-to-r from-verdict-green to-cyber-blue h-2 rounded-full" style={{ width: '98%' }}></div>
                   </div>
                   <div className="flex justify-between items-center mt-3">
                     <span className="text-steel-grey">Amit&apos;s Score:</span>
@@ -138,18 +138,18 @@ export default function Home() {
                 <div className="text-center py-4 bg-verdict-green/10 rounded-xl border border-verdict-green/30 mb-4">
                   <div className="text-steel-grey text-xs mb-1">THE VERDICT IS IN</div>
                   <div className="text-verdict-green font-black text-2xl">🏆 Akansha WINS</div>
-                  <div className="text-steel-grey text-xs mt-1">Confidence: 87%</div>
+                  <div className="text-steel-grey text-xs mt-1">Confidence: 99%</div>
                 </div>
 
                 {/* Summary */}
                 <div className="text-steel-grey text-xs leading-relaxed mb-4">
-                  &quot;Akansha presented clear evidence of prior agreement. Amit&apos;s argument relied heavily on assumptions without supporting documentation.&quot;
+                  &quot;Akansha ate and left no crumbs with the proof 💅. Amit is actually delulu, just vibes and zero facts 🤡. It&apos;s giving embarrassed for him.&quot;
                 </div>
 
                 {/* Footer */}
                 <div className="text-center border-t border-dashed border-white/20 pt-4">
                   <div className="text-steel-grey text-xs">════════════════════</div>
-                  <div className="text-steel-grey text-[10px] mt-2">Processed by AI Judge • Dec 10, 2024</div>
+                  <div className="text-steel-grey text-[10px] mt-2">Processed by Dr. Harmony 💖 • Nov 11, 2025</div>
                   <div className="text-steel-grey text-[10px]">
                     rightitup.vercel.app
                   </div>
@@ -357,9 +357,9 @@ export default function Home() {
               ⚖️ Right It Up
             </div>
             <div className="flex gap-6 text-steel-grey text-sm">
-              <a href="#" className="hover:text-starlight-white transition-colors">Privacy</a>
-              <a href="#" className="hover:text-starlight-white transition-colors">Terms</a>
-              <a href="#" className="hover:text-starlight-white transition-colors">Contact</a>
+              <Link href="/privacy" className="hover:text-starlight-white transition-colors">Privacy</Link>
+              <Link href="/tos" className="hover:text-starlight-white transition-colors">Terms</Link>
+              {/* <Link href="#" className="hover:text-starlight-white transition-colors">Contact</Link> */}
             </div>
             <div className="text-steel-grey text-sm">
               © {new Date().getFullYear()} Right It Up. All verdicts final (kinda).
