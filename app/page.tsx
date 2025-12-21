@@ -4,7 +4,7 @@ import Link from 'next/link'
 export default function Home() {
   return (
     <div className="min-h-screen overflow-x-hidden">
-      <ClientNavbar />
+      {/* <ClientNavbar /> */}
 
       {/* Hero Section */}
       <main className="pt-28 md:pt-32 px-4 md:px-10">

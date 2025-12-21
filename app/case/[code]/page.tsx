@@ -54,7 +54,6 @@ export default async function CasePage({ params, searchParams }: CasePageProps) 
     
     return (
         <div className="min-h-screen">
-            <Navbar user={user} quota={quota} />
             
             <main className="pt-28 md:pt-32 px-4 md:px-10 pb-20">
                 <div className="max-w-2xl mx-auto">

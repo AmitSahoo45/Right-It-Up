@@ -29,7 +29,6 @@ export default async function VerdictPage({ params }: VerdictPageProps) {
 
     return (
         <div className="min-h-screen">
-            <Navbar user={user} />
 
             <main className="pt-28 md:pt-32 px-4 md:px-10 pb-20">
                 <div className="max-w-4xl mx-auto">
