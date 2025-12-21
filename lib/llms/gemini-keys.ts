@@ -1,11 +1,11 @@
 const GEMINI_KEYS = [
-    process.env.NEXT_PUBLIC_API_GEMINI_RAF,
-    process.env.NEXT_PUBLIC_API_GEMINI_MIA,
-    process.env.NEXT_PUBLIC_API_GEMINI_ITS,
-    process.env.NEXT_PUBLIC_API_GEMINI_ASA,
-    process.env.NEXT_PUBLIC_API_GEMINI_AKU,
-    process.env.NEXT_PUBLIC_API_GEMINI_RLA,
-].filter((key): key is string => !!key);
+    process.env.GEMINI_API_KEY_1,
+    process.env.GEMINI_API_KEY_2,
+    process.env.GEMINI_API_KEY_3,
+    process.env.GEMINI_API_KEY_4,
+    process.env.GEMINI_API_KEY_5,
+    process.env.GEMINI_API_KEY_6,
+].filter((key): key is string => !!key && key.length > 0);
 
 let currentKeyIndex = 0;
 
@@ -25,4 +25,12 @@ export function rotateToNextKey(): string {
 
 export function getTotalKeys(): number {
     return GEMINI_KEYS.length;
+}
+
+export function getCurrentKeyIndex(): number {
+    return currentKeyIndex;
+}
+
+export function resetKeyRotation(): void {
+    currentKeyIndex = 0;
 }
