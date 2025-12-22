@@ -136,7 +136,7 @@ export async function POST(
             );
         }
 
-        if (detectPromptInjection(sanitizedArgument)) 
+        if (detectPromptInjection(sanitizedArgument))
             console.warn(`Potential prompt injection detected from IP ${clientIp}: ${safeLogExcerpt(sanitizedArgument)}`);
 
         const evidenceText = sanitizeEvidenceText(body.party_b_evidence_text || []);
@@ -180,26 +180,27 @@ export async function POST(
                 partyA: {
                     name: updatedCase.party_a_name,
                     argument: updatedCase.party_a_argument,
-                    evidence: [
-                        ...updatedCase.party_a_evidence_text,
-                        ...updatedCase.party_a_evidence_images.map(url => `[Image: ${url}]`)
-                    ]
+                    evidence: updatedCase.party_a_evidence_text
                 },
                 partyB: {
                     name: updatedCase.party_b_name!,
                     argument: updatedCase.party_b_argument!,
-                    evidence: [
-                        ...updatedCase.party_b_evidence_text,
-                        ...updatedCase.party_b_evidence_images.map(url => `[Image: ${url}]`)
-                    ]
+                    evidence: updatedCase.party_b_evidence_text
                 },
                 tone: updatedCase.tone
             };
 
+            const partyAImages = updatedCase.party_a_evidence_images || [];
+            const partyBImages = updatedCase.party_b_evidence_images || [];
+
+            console.log(`Generating verdict with ${partyAImages.length} Party A images and ${partyBImages.length} Party B images`);
+
             const aiResponse: AIVerdictResponse = await generateVerdict({
                 dispute,
                 category: updatedCase.category,
-                tone: updatedCase.tone
+                tone: updatedCase.tone,
+                partyAImages,
+                partyBImages
             });
 
             await saveVerdict(caseData.id, {

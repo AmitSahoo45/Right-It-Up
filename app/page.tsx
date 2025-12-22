@@ -143,7 +143,7 @@ export default function Home() {
 
                 {/* Summary */}
                 <div className="text-steel-grey text-xs leading-relaxed mb-4">
-                  &quot;Akansha ate and left no crumbs with the proof 💅. Amit is actually delulu, just vibes and zero facts 🤡. It&apos;s giving embarrassed for him.&quot;
+                  &quot;Akansha ate and left no crumbs with the proof 💅. Amit is actually delulu, just vibes and zero facts 🤡. The hell is wrong with him??? 😭💀.&quot;
                 </div>
 
                 {/* Footer */}

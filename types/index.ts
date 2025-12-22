@@ -208,6 +208,8 @@ export interface GenerateVerdictOptions {
     provider?: AIProvider;
     category?: DisputeCategory;
     tone?: VerdictTone;
+    partyAImages?: string[];
+    partyBImages?: string[];
 }
 
 // ============================================
