@@ -193,7 +193,7 @@ export async function POST(
             const partyAImages = updatedCase.party_a_evidence_images || [];
             const partyBImages = updatedCase.party_b_evidence_images || [];
 
-            console.log(`Generating verdict with ${partyAImages.length} Party A images and ${partyBImages.length} Party B images`);
+            console.log(`[OCR-Enhanced] Generating verdict with ${partyAImages.length} Party A images and ${partyBImages.length} Party B images`);
 
             const aiResponse: AIVerdictResponse = await generateVerdict({
                 dispute,
@@ -207,20 +207,25 @@ export async function POST(
                 party_a_score: aiResponse.analysis.partyA.score,
                 party_b_score: aiResponse.analysis.partyB.score,
                 party_a_analysis: {
-                    strengths: aiResponse.analysis.partyA.strengths,
-                    weaknesses: aiResponse.analysis.partyA.weaknesses,
-                    fallacies: aiResponse.analysis.partyA.fallacies
+                    strengths: aiResponse.analysis.partyA.strengths || [],
+                    weaknesses: aiResponse.analysis.partyA.weaknesses || [],
+                    fallacies: aiResponse.analysis.partyA.fallacies || [],
+                    evidenceQuality: aiResponse.analysis.partyA.evidenceQuality,
+                    keyEvidence: aiResponse.analysis.partyA.keyEvidence || []
                 },
                 party_b_analysis: {
-                    strengths: aiResponse.analysis.partyB.strengths,
-                    weaknesses: aiResponse.analysis.partyB.weaknesses,
-                    fallacies: aiResponse.analysis.partyB.fallacies
+                    strengths: aiResponse.analysis.partyB.strengths || [],
+                    weaknesses: aiResponse.analysis.partyB.weaknesses || [],
+                    fallacies: aiResponse.analysis.partyB.fallacies || [],
+                    evidenceQuality: aiResponse.analysis.partyB.evidenceQuality,
+                    keyEvidence: aiResponse.analysis.partyB.keyEvidence || []
                 },
                 winner: aiResponse.verdict.winner,
                 confidence: aiResponse.verdict.confidence,
                 summary: aiResponse.verdict.summary,
                 reasoning: aiResponse.verdict.reasoning,
                 advice: aiResponse.verdict.advice,
+                evidence_impact: aiResponse.verdict.evidenceImpact,
                 ai_provider: 'gemini'
             });
 

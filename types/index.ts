@@ -9,6 +9,22 @@ export type AIProvider = 'anthropic' | 'groq' | 'gemini';
 export type VerdictTone = 'genz' | 'professional' | 'savage' | 'wholesome' | 'neutral';
 export type DisputeCategory = 'relationship' | 'roommate' | 'sports' | 'tech' | 'general';
 export type VerdictWinner = 'partyA' | 'partyB' | 'draw';
+export type EvidenceQuality = 'strong' | 'moderate' | 'weak' | 'none';
+
+
+export interface SaveVerdictData {
+    party_a_score: number;
+    party_b_score: number;
+    party_a_analysis: PartyAnalysis;
+    party_b_analysis: PartyAnalysis;
+    winner: 'partyA' | 'partyB' | 'draw';
+    confidence: number;
+    summary: string;
+    reasoning: string;
+    advice: string;
+    evidence_impact?: string;
+    ai_provider: string;
+}
 
 export interface Case {
     id: string;
@@ -44,6 +60,8 @@ export interface PartyAnalysis {
     strengths: string[];
     weaknesses: string[];
     fallacies: string[];
+    evidenceQuality?: EvidenceQuality;
+    keyEvidence?: string[];
 }
 
 export interface Verdict {
@@ -60,6 +78,7 @@ export interface Verdict {
     summary: string;
     reasoning: string;
     advice: string;
+    evidence_impact?: string;
 
     ai_provider: AIProvider;
     receipt_image_url: string | null;
@@ -200,6 +219,7 @@ export interface AIVerdictResponse {
         summary: string;
         reasoning: string;
         advice: string;
+        evidenceImpact?: string;
     };
 }
 
@@ -295,3 +315,26 @@ export const JUDGE_PERSONAS: Record<DisputeCategory, { name: string; icon: strin
         systemAddendum: "",
     },
 };
+
+// ============================================
+// LOGICAL FALLACIES REFERENCE
+// ============================================
+
+export const LOGICAL_FALLACIES = [
+    { name: 'Ad Hominem', description: 'Attacking the person instead of their argument', icon: '👤' },
+    { name: 'Straw Man', description: 'Misrepresenting someone\'s argument to make it easier to attack', icon: '🎃' },
+    { name: 'Appeal to Emotion', description: 'Using feelings instead of facts to persuade', icon: '😢' },
+    { name: 'False Dichotomy', description: 'Presenting only two options when more exist', icon: '⚖️' },
+    { name: 'Slippery Slope', description: 'Claiming one thing will inevitably lead to extreme outcomes', icon: '📉' },
+    { name: 'Appeal to Authority', description: 'Claiming something is true because an authority said so', icon: '👨‍⚖️' },
+    { name: 'Circular Reasoning', description: 'Using the conclusion as a premise', icon: '🔄' },
+    { name: 'Red Herring', description: 'Introducing irrelevant information to distract', icon: '🐟' },
+    { name: 'Tu Quoque', description: '"You do it too" - deflecting by accusing the other party', icon: '👉' },
+    { name: 'Gaslighting', description: 'Making someone question their own reality or memory', icon: '💡' },
+    { name: 'Moving Goalposts', description: 'Changing the criteria after being proven wrong', icon: '🥅' },
+    { name: 'Whataboutism', description: 'Deflecting with unrelated counter-accusations', icon: '❓' },
+    { name: 'DARVO', description: 'Deny, Attack, Reverse Victim and Offender', icon: '🔄' },
+    { name: 'Guilt-Tripping', description: 'Using guilt as a manipulation tactic', icon: '😔' },
+] as const;
+
+export type LogicalFallacy = typeof LOGICAL_FALLACIES[number]['name'];

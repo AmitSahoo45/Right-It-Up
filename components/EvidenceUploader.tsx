@@ -4,6 +4,13 @@ import { useState, useRef } from 'react';
 import { createClient } from '@/utils/supabase/client';
 import type { EvidenceUploaderProps } from '@/types';
 
+const EVIDENCE_TIPS = [
+    { icon: '💬', label: 'Chat screenshots', desc: 'WhatsApp, iMessage, SMS' },
+    { icon: '🧾', label: 'Receipts', desc: 'Proof of purchases' },
+    { icon: '📄', label: 'Documents', desc: 'Contracts, agreements' },
+    { icon: '📸', label: 'Photos', desc: 'Physical evidence' },
+];
+
 export function EvidenceUploader({
     textEvidence,
     imageEvidence,
@@ -43,13 +50,11 @@ export function EvidenceUploader({
         const newUrls: string[] = [];
         
         for (const file of Array.from(files)) {
-            // Validate file type
             if (!file.type.startsWith('image/')) {
                 setUploadError('Only image files are allowed');
                 continue;
             }
             
-            // Validate file size (max 5MB)
             if (file.size > 5 * 1024 * 1024) {
                 setUploadError('Images must be under 5MB');
                 continue;
@@ -71,7 +76,6 @@ export function EvidenceUploader({
                     continue;
                 }
                 
-                // Get public URL
                 const { data: urlData } = supabase.storage
                     .from('evidence')
                     .getPublicUrl(data.path);
@@ -89,7 +93,6 @@ export function EvidenceUploader({
         
         setIsUploading(false);
         
-        // Clear file input
         if (fileInputRef.current) {
             fileInputRef.current.value = '';
         }
@@ -103,10 +106,28 @@ export function EvidenceUploader({
         <div className="space-y-4">
             <div>
                 <label className="block text-sm font-medium text-steel-grey mb-2">
-                    Evidence <span className="text-steel-grey/50">(optional)</span>
+                    Evidence <span className="text-steel-grey/50">(optional but powerful!)</span>
                 </label>
                 <p className="text-xs text-steel-grey/70 mb-3">
-                    Add supporting facts or upload screenshots (max {maxImages} images)
+                    Upload screenshots of conversations and the AI will extract & analyze the text automatically
+                </p>
+            </div>
+            
+            {/* 🆕 OCR Tips Banner */}
+            <div className="p-3 bg-cyber-blue/10 border border-cyber-blue/20 rounded-xl">
+                <div className="flex items-center gap-2 mb-2">
+                    <span className="text-cyber-blue text-sm font-medium">📸 Pro tip: Screenshots speak louder than words</span>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                    {EVIDENCE_TIPS.map((tip, i) => (
+                        <span key={i} className="inline-flex items-center gap-1 px-2 py-1 bg-charcoal-layer/50 rounded-lg text-xs text-steel-grey">
+                            <span>{tip.icon}</span>
+                            <span>{tip.label}</span>
+                        </span>
+                    ))}
+                </div>
+                <p className="text-xs text-steel-grey/60 mt-2">
+                    Our AI reads text from images - chat screenshots, receipts, and documents are powerful evidence!
                 </p>
             </div>
             
@@ -131,7 +152,6 @@ export function EvidenceUploader({
                     </button>
                 </div>
                 
-                {/* Text Evidence List */}
                 {textEvidence.length > 0 && (
                     <div className="space-y-2">
                         {textEvidence.map((evidence, index) => (
@@ -166,7 +186,7 @@ export function EvidenceUploader({
                 />
                 <label
                     htmlFor="evidence-images"
-                    className={`flex items-center justify-center gap-2 p-4 border-2 border-dashed rounded-xl cursor-pointer transition-all ${
+                    className={`flex flex-col items-center justify-center gap-2 p-6 border-2 border-dashed rounded-xl cursor-pointer transition-all ${
                         isUploading
                             ? 'border-electric-violet/50 bg-electric-violet/10'
                             : 'border-white/10 hover:border-electric-violet/50 hover:bg-charcoal-layer/30'
@@ -174,7 +194,7 @@ export function EvidenceUploader({
                 >
                     {isUploading ? (
                         <>
-                            <svg className="animate-spin h-5 w-5 text-electric-violet" viewBox="0 0 24 24">
+                            <svg className="animate-spin h-8 w-8 text-electric-violet" viewBox="0 0 24 24">
                                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                             </svg>
@@ -182,12 +202,19 @@ export function EvidenceUploader({
                         </>
                     ) : (
                         <>
-                            <span className="text-2xl">📷</span>
-                            <span className="text-steel-grey text-sm">
+                            <div className="flex items-center gap-3 text-3xl">
+                                <span>💬</span>
+                                <span>🧾</span>
+                                <span>📄</span>
+                            </div>
+                            <span className="text-starlight-white font-medium">
                                 {imageEvidence.length >= maxImages 
                                     ? 'Max images reached'
-                                    : 'Click to upload screenshots'
+                                    : 'Drop screenshots here or click to upload'
                                 }
+                            </span>
+                            <span className="text-steel-grey text-xs">
+                                Chat screenshots, receipts, documents • Max {maxImages} images • 5MB each
                             </span>
                         </>
                     )}
@@ -208,6 +235,9 @@ export function EvidenceUploader({
                                 alt={`Evidence ${index + 1}`}
                                 className="w-full h-full object-cover"
                             />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
+                                <span className="absolute bottom-1 left-1 text-xs text-white/80">📸 OCR Ready</span>
+                            </div>
                             <button
                                 type="button"
                                 onClick={() => removeImage(index)}

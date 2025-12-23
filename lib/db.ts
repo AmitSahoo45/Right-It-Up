@@ -5,7 +5,9 @@ import type {
     QuotaCheck,
     CreateCaseRequest,
     RespondCaseRequest,
-    CaseStatus
+    CaseStatus,
+    PartyAnalysis,
+    SaveVerdictData
 } from '@/types';
 
 export { getClientIp, formatDate, getTimeRemaining } from './utils';
@@ -115,19 +117,6 @@ export const submitResponse = async (
 export async function updateCaseStatus(caseId: string, status: CaseStatus): Promise<void> {
     const supabase = await createClient();
 
-    // ============================================
-    // OLD WAY - kept for reference
-    // const updateData: Partial<Case> = { status };
-    // if (status === 'complete') {
-    //     updateData.completed_at = new Date().toISOString();
-    // }
-
-    // const { error } = await supabase
-    //     .from('cases')
-    //     .update(updateData)
-    //     .eq('id', caseId);
-    // ============================================
-
     const { error } = await supabase.rpc('update_case_status', {
         p_case_id: caseId,
         p_status: status
@@ -142,7 +131,7 @@ export async function updateCaseStatus(caseId: string, status: CaseStatus): Prom
 
 export const saveVerdict = async (
     caseId: string,
-    verdictData: Omit<Verdict, 'id' | 'case_id' | 'created_at' | 'receipt_image_url' | 'ruling_image_url'>
+    verdictData: SaveVerdictData
 ): Promise<Verdict> => {
     const supabase = await createClient();
 
@@ -150,7 +139,17 @@ export const saveVerdict = async (
         .from('verdicts')
         .insert({
             case_id: caseId,
-            ...verdictData
+            party_a_score: verdictData.party_a_score,
+            party_b_score: verdictData.party_b_score,
+            party_a_analysis: verdictData.party_a_analysis,
+            party_b_analysis: verdictData.party_b_analysis,
+            winner: verdictData.winner,
+            confidence: verdictData.confidence,
+            summary: verdictData.summary,
+            reasoning: verdictData.reasoning,
+            advice: verdictData.advice,
+            evidence_impact: verdictData.evidence_impact || null,
+            ai_provider: verdictData.ai_provider
         })
         .select()
         .single();
