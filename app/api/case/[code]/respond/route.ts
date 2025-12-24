@@ -8,6 +8,7 @@ import {
     recordUsage,
     saveVerdict,
 } from '@/lib/db';
+import { updateBothPartiesStats } from '@/lib/db-profile';
 import { getClientIp } from '@/lib/utils';
 import { generateVerdict } from '@/lib/ai';
 import {
@@ -239,6 +240,37 @@ export async function POST(
                 user?.id || null,
                 clientIp
             );
+
+            try {
+                const partyAHadEvidence = (updatedCase.party_a_evidence_text?.length || 0) > 0 || 
+                                          (updatedCase.party_a_evidence_images?.length || 0) > 0;
+                const partyBHadEvidence = (updatedCase.party_b_evidence_text?.length || 0) > 0 || 
+                                          (updatedCase.party_b_evidence_images?.length || 0) > 0;
+                
+                await updateBothPartiesStats({
+                    caseId: caseData.id,
+                    caseCode: code,
+                    category: updatedCase.category,
+                    tone: updatedCase.tone,
+                    winner: aiResponse.verdict.winner,
+                    
+                    partyAUserId: updatedCase.party_a_id,
+                    partyAName: updatedCase.party_a_name,
+                    partyAScore: aiResponse.analysis.partyA.score,
+                    partyAHadEvidence,
+                    partyAFallacies: aiResponse.analysis.partyA.fallacies?.length || 0,
+                    
+                    partyBUserId: user?.id || null,
+                    partyBName: updatedCase.party_b_name!,
+                    partyBScore: aiResponse.analysis.partyB.score,
+                    partyBHadEvidence,
+                    partyBFallacies: aiResponse.analysis.partyB.fallacies?.length || 0,
+                });
+                
+                console.log(`[Stats] Updated stats for case ${code}`);
+            } catch (statsError) {
+                console.error('Failed to update user stats:', statsError);
+            }
 
             await updateCaseStatus(caseData.id, 'complete');
             return NextResponse.json({

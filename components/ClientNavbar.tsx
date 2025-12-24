@@ -9,7 +9,7 @@ export function ClientNavbar() {
     const { user, quota, isLoading } = useAuth();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const userName: string = user?.user_metadata?.full_name?.split(' ')[0] || user?.email?.split('@')[0] || 'User';
-
+    console.log("Quota - ", quota)
     if (isLoading) {
         return (
             <nav className="fixed top-4 left-1/2 -translate-x-1/2 w-[95%] md:w-[85%] lg:w-[80%] z-50 rounded-2xl border border-white/10 bg-midnight-void/80 backdrop-blur-xl shadow-2xl">
@@ -44,14 +44,18 @@ export function ClientNavbar() {
                 <div className="hidden md:flex items-center gap-3 lg:gap-4">
                     {user ? (
                         <>
-                            <div className="flex items-center gap-2 px-3 py-1.5 bg-charcoal-layer/50 rounded-xl border border-white/5">
+                            {/* Profile Link with Avatar */}
+                            <Link
+                                href="/profile"
+                                className="flex items-center gap-2 px-3 py-1.5 bg-charcoal-layer/50 rounded-xl border border-white/5 hover:border-electric-violet/30 transition-all"
+                            >
                                 <div className="w-7 h-7 rounded-full bg-gradient-to-br from-electric-violet to-cyber-blue flex items-center justify-center text-xs font-bold text-white">
                                     {userName.charAt(0).toUpperCase()}
                                 </div>
                                 <span className="text-steel-grey text-sm font-medium max-w-[100px] truncate">
                                     {userName}
                                 </span>
-                            </div>
+                            </Link>
 
                             <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border ${quota.remaining > 2
                                 ? 'bg-verdict-green/10 border-verdict-green/20'
@@ -117,18 +121,22 @@ export function ClientNavbar() {
             </div>
 
             {/* Mobile Menu Dropdown */}
-            <div className={`md:hidden overflow-hidden transition-all duration-300 ease-out ${isMenuOpen ? 'max-h-64 opacity-100' : 'max-h-0 opacity-0'}`}>
+            <div className={`md:hidden overflow-hidden transition-all duration-300 ease-out ${isMenuOpen ? 'max-h-80 opacity-100' : 'max-h-0 opacity-0'}`}>
                 <div className="px-4 pb-4 pt-2 border-t border-white/5">
                     {user ? (
                         <div className="space-y-3">
-                            <div className="flex items-center justify-between p-3 bg-charcoal-layer/30 rounded-xl">
+                            <Link
+                                href="/profile"
+                                onClick={() => setIsMenuOpen(false)}
+                                className="flex items-center justify-between p-3 bg-charcoal-layer/30 rounded-xl hover:bg-charcoal-layer/50 transition-colors"
+                            >
                                 <div className="flex items-center gap-3">
                                     <div className="w-9 h-9 rounded-full bg-gradient-to-br from-electric-violet to-cyber-blue flex items-center justify-center text-sm font-bold text-white">
                                         {userName.charAt(0).toUpperCase()}
                                     </div>
                                     <div>
                                         <div className="text-starlight-white text-sm font-medium">{userName}</div>
-                                        <div className="text-steel-grey text-xs">Logged in</div>
+                                        <div className="text-steel-grey text-xs">View Profile</div>
                                     </div>
                                 </div>
                                 <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg border ${quota.remaining > 2 ? 'bg-verdict-green/10 border-verdict-green/20'
@@ -144,7 +152,7 @@ export function ClientNavbar() {
                                             : 'text-objection-red'
                                         }`}>{quota.remaining}/5</span>
                                 </div>
-                            </div>
+                            </Link>
                             <div className="flex gap-2">
                                 <Link href="/submit" className="flex-1 py-2.5 bg-gradient-to-r from-electric-violet to-cyber-blue text-white text-center rounded-xl text-sm font-bold" onClick={() => setIsMenuOpen(false)}>
                                     ⚖️ New Case
