@@ -32,12 +32,21 @@ export function ProfileStats({ stats }: ProfileStatsProps) {
             />
 
             {/* Best Streak */}
-            <StatCard
+            {/* <StatCard
                 label="Best Streak"
                 value={stats.longest_streak.toString()}
                 icon="🔥"
                 color="amber"
                 detail="consecutive wins"
+            /> */}
+
+            {/* Best Win or Loss Streak */}
+            <StatCard
+                label={stats.longest_win_streak >= stats.longest_loss_streak ? 'Best Win Streak' : 'Worst Loss Streak'}
+                value={stats.longest_win_streak >= stats.longest_loss_streak ? stats.longest_win_streak.toString() : stats.longest_loss_streak.toString()}
+                icon={stats.longest_win_streak >= stats.longest_loss_streak ? '🔥' : '😭'}
+                color={stats.longest_win_streak >= stats.longest_loss_streak ? 'green' : 'red'}
+                detail={stats.longest_win_streak >= stats.longest_loss_streak ? "consecutive wins" : "consecutive losses"}
             />
 
             {/* Evidence Win Rate */}
@@ -102,7 +111,7 @@ function StatCard({ label, value, icon, color, detail }: StatCardProps) {
             bg: 'bg-verdict-green/10',
             border: 'border-verdict-green/20',
             text: 'text-verdict-green',
-            glow: 'hover:shadow-verdict-green-glow'
+            glow: 'hover:shadow-verdict-green-glow/20'
         },
         amber: {
             bg: 'bg-caution-amber/10',
@@ -114,19 +123,19 @@ function StatCard({ label, value, icon, color, detail }: StatCardProps) {
             bg: 'bg-objection-red/10',
             border: 'border-objection-red/20',
             text: 'text-objection-red',
-            glow: 'hover:shadow-objection-red-glow'
+            glow: 'hover:shadow-objection-red-glow/20'
         },
         blue: {
             bg: 'bg-cyber-blue/10',
             border: 'border-cyber-blue/20',
             text: 'text-cyber-blue',
-            glow: 'hover:shadow-cyber-blue-glow'
+            glow: 'hover:shadow-cyber-blue-glow/20'
         },
         violet: {
             bg: 'bg-electric-violet/10',
             border: 'border-electric-violet/20',
             text: 'text-electric-violet',
-            glow: 'hover:shadow-electric-glow'
+            glow: 'hover:shadow-electric-glow/20'
         },
         grey: {
             bg: 'bg-steel-grey/10',

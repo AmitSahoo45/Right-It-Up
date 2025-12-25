@@ -226,7 +226,19 @@ BEGIN
             ELSE 0 
         END,
         current_streak = v_new_streak,
-        longest_streak = GREATEST(v_current_stats.longest_streak, v_new_streak),
+        longest_streak = GREATEST(v_current_stats.longest_streak, v_new_streak), -- overall longest streak, this is not accurate for win/loss separately
+        longest_win_streak = 
+        CASE 
+            WHEN v_new_streak_type = 'win' 
+            THEN GREATEST(v_current_stats.longest_win_streak, v_new_streak)
+            ELSE v_current_stats.longest_win_streak 
+        END,
+        longest_loss_streak = 
+        CASE 
+            WHEN v_new_streak_type = 'loss' 
+            THEN GREATEST(v_current_stats.longest_loss_streak, v_new_streak)
+            ELSE v_current_stats.longest_loss_streak 
+        END,
         streak_type = v_new_streak_type,
         category_stats = v_category_stats,
         avg_score = ROUND(((avg_score * total_cases) + p_score) / (total_cases + 1), 2),

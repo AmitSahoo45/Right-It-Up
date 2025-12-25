@@ -33,6 +33,9 @@ export interface UserStats {
     // Streaks
     current_streak: number;
     longest_streak: number;
+    // Added these as a part of detailed streak tracking
+    longest_win_streak: number;
+    longest_loss_streak: number;
     streak_type: 'win' | 'loss' | 'none';
 
     // Category breakdown

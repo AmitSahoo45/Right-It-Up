@@ -64,7 +64,7 @@ function HistoryCard({ entry }: { entry: CaseHistoryEntry }) {
 
     return (
         <Link href={`/verdict/${entry.case_code}`}>
-            <div className={`${config.bg} ${config.border} border rounded-2xl p-4 hover:scale-[1.01] transition-all cursor-pointer`}>
+            <div className={`${config.bg} ${config.border} border rounded-2xl p-4 hover:scale-[1.01] transition-all cursor-pointer mb-3`}>
                 <div className="flex items-center justify-between mb-3">
                     {/* Outcome badge */}
                     <span className={`${config.badgeBg} ${config.text} px-3 py-1 rounded-full text-xs font-bold`}>

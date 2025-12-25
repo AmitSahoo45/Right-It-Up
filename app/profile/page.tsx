@@ -117,8 +117,8 @@ export default function ProfilePage() {
                                     <QuickStat
                                         label="Streak"
                                         value={profile.stats!.current_streak}
-                                        suffix={profile.stats!.streak_type === 'win' ? '🔥' : ''}
-                                        color={profile.stats!.streak_type === 'win' ? 'green' : 'grey'}
+                                        suffix={profile.stats!.streak_type === 'win' ? '🔥' : '😭'}
+                                        color={profile.stats!.streak_type === 'win' ? 'green' : 'red'}
                                     />
                                     <QuickStat
                                         label="Badges"
@@ -132,7 +132,7 @@ export default function ProfilePage() {
                 </div>
 
                 {/* Tabs */}
-                <div className="flex gap-2 mb-8 overflow-x-auto pb-2">
+                <div className="flex gap-2 mb-8 flex-col md:flex-row md:items-start items-center pb-2">
                     <TabButton
                         active={activeTab === 'overview'}
                         onClick={() => setActiveTab('overview')}
@@ -197,20 +197,21 @@ function QuickStat({
     label: string;
     value: string | number;
     suffix?: string;
-    color: 'green' | 'amber' | 'blue' | 'violet' | 'grey';
+    color: 'green' | 'amber' | 'blue' | 'violet' | 'grey' | 'red';
 }) {
     const colors = {
         green: 'text-verdict-green',
         amber: 'text-caution-amber',
         blue: 'text-cyber-blue',
         violet: 'text-electric-violet',
-        grey: 'text-steel-grey'
+        grey: 'text-steel-grey',
+        red: 'text-red-500'
     };
 
     return (
         <div className="text-center px-4 py-2 bg-charcoal-layer/50 rounded-xl border border-white/5">
             <div className={`text-xl font-black ${colors[color]}`}>
-                {value}{suffix}
+                {value} {suffix}
             </div>
             <div className="text-steel-grey text-xs">{label}</div>
         </div>
