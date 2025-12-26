@@ -12,7 +12,44 @@ export type VerdictTone = 'genz' | 'professional' | 'savage' | 'wholesome' | 'ne
 export type DisputeCategory = 'relationship' | 'roommate' | 'sports' | 'tech' | 'general';
 export type VerdictWinner = 'partyA' | 'partyB' | 'draw';
 export type EvidenceQuality = 'strong' | 'moderate' | 'weak' | 'none';
+export type GaslightingSeverity = 'none' | 'mild' | 'moderate' | 'severe';
 
+// ============================================
+// LOGICAL FALLACY TYPES
+// ============================================
+
+export interface DetectedFallacy {
+    name: string;
+    instance: string;  // Quote or paraphrase showing where fallacy occurred
+    impact: string;    // How it weakens their argument
+}
+
+// Legacy fallacy type (string array) for backwards compatibility
+export type FallacyEntry = string | DetectedFallacy;
+
+// ============================================
+// GASLIGHTING DETECTION TYPES
+// ============================================
+
+export interface GaslightingAnalysis {
+    detected: boolean;
+    severity: GaslightingSeverity;
+    instances: string[];
+    explanation: string;
+}
+
+// ============================================
+// PARTY ANALYSIS (ENHANCED)
+// ============================================
+
+export interface PartyAnalysis {
+    strengths: string[];
+    weaknesses: string[];
+    fallacies: FallacyEntry[];  // Can be string[] (legacy) or DetectedFallacy[]
+    gaslighting?: GaslightingAnalysis;
+    evidenceQuality?: EvidenceQuality;
+    keyEvidence?: string[];
+}
 
 export interface SaveVerdictData {
     party_a_score: number;
@@ -56,14 +93,6 @@ export interface Case {
     responded_at: string | null;
     completed_at: string | null;
     expires_at: string;
-}
-
-export interface PartyAnalysis {
-    strengths: string[];
-    weaknesses: string[];
-    fallacies: string[];
-    evidenceQuality?: EvidenceQuality;
-    keyEvidence?: string[];
 }
 
 export interface Verdict {
@@ -319,24 +348,57 @@ export const JUDGE_PERSONAS: Record<DisputeCategory, { name: string; icon: strin
 };
 
 // ============================================
-// LOGICAL FALLACIES REFERENCE
+// LOGICAL FALLACIES REFERENCE (Enhanced)
 // ============================================
 
 export const LOGICAL_FALLACIES = [
-    { name: 'Ad Hominem', description: 'Attacking the person instead of their argument', icon: '👤' },
-    { name: 'Straw Man', description: 'Misrepresenting someone\'s argument to make it easier to attack', icon: '🎃' },
-    { name: 'Appeal to Emotion', description: 'Using feelings instead of facts to persuade', icon: '😢' },
-    { name: 'False Dichotomy', description: 'Presenting only two options when more exist', icon: '⚖️' },
-    { name: 'Slippery Slope', description: 'Claiming one thing will inevitably lead to extreme outcomes', icon: '📉' },
-    { name: 'Appeal to Authority', description: 'Claiming something is true because an authority said so', icon: '👨‍⚖️' },
-    { name: 'Circular Reasoning', description: 'Using the conclusion as a premise', icon: '🔄' },
-    { name: 'Red Herring', description: 'Introducing irrelevant information to distract', icon: '🐟' },
-    { name: 'Tu Quoque', description: '"You do it too" - deflecting by accusing the other party', icon: '👉' },
-    { name: 'Gaslighting', description: 'Making someone question their own reality or memory', icon: '💡' },
-    { name: 'Moving Goalposts', description: 'Changing the criteria after being proven wrong', icon: '🥅' },
-    { name: 'Whataboutism', description: 'Deflecting with unrelated counter-accusations', icon: '❓' },
-    { name: 'DARVO', description: 'Deny, Attack, Reverse Victim and Offender', icon: '🔄' },
-    { name: 'Guilt-Tripping', description: 'Using guilt as a manipulation tactic', icon: '😔' },
+    { name: 'Ad Hominem', description: 'Attacking the person instead of their argument', icon: '👤', severity: 'medium' },
+    { name: 'Straw Man', description: 'Misrepresenting someone\'s argument to make it easier to attack', icon: '🎃', severity: 'high' },
+    { name: 'Appeal to Emotion', description: 'Using feelings instead of facts to persuade', icon: '😢', severity: 'medium' },
+    { name: 'False Dichotomy', description: 'Presenting only two options when more exist', icon: '⚖️', severity: 'medium' },
+    { name: 'Slippery Slope', description: 'Claiming one thing will inevitably lead to extreme outcomes', icon: '📉', severity: 'medium' },
+    { name: 'Appeal to Authority', description: 'Claiming something is true because an authority said so', icon: '👨‍⚖️', severity: 'low' },
+    { name: 'Circular Reasoning', description: 'Using the conclusion as a premise', icon: '🔄', severity: 'high' },
+    { name: 'Red Herring', description: 'Introducing irrelevant information to distract', icon: '🐟', severity: 'medium' },
+    { name: 'Tu Quoque', description: '"You do it too" - deflecting by accusing the other party', icon: '👉', severity: 'medium' },
+    { name: 'Moving Goalposts', description: 'Changing the criteria after being proven wrong', icon: '🥅', severity: 'high' },
+    { name: 'Whataboutism', description: 'Deflecting with unrelated counter-accusations', icon: '❓', severity: 'medium' },
+    { name: 'DARVO', description: 'Deny, Attack, Reverse Victim and Offender', icon: '🔁', severity: 'critical' },
+    { name: 'Guilt-Tripping', description: 'Using guilt as a manipulation tactic', icon: '😔', severity: 'medium' },
+    { name: 'Appeal to Tradition', description: 'Arguing something is right because it\'s traditional', icon: '📜', severity: 'low' },
+    { name: 'Hasty Generalization', description: 'Making broad conclusions from limited examples', icon: '🏃', severity: 'medium' },
+    { name: 'Burden of Proof Shifting', description: 'Demanding others disprove rather than proving the claim', icon: '🎭', severity: 'high' },
 ] as const;
 
 export type LogicalFallacy = typeof LOGICAL_FALLACIES[number]['name'];
+
+// ============================================
+// GASLIGHTING SEVERITY REFERENCE
+// ============================================
+
+export const GASLIGHTING_SEVERITY_CONFIG = {
+    none: {
+        label: 'None Detected',
+        color: '#10B981', // green
+        icon: '✅',
+        description: 'No gaslighting indicators found'
+    },
+    mild: {
+        label: 'Mild',
+        color: '#F59E0B', // amber
+        icon: '⚠️',
+        description: '1-2 isolated instances, possibly poor communication'
+    },
+    moderate: {
+        label: 'Moderate',
+        color: '#F97316', // orange
+        icon: '🚨',
+        description: 'Multiple instances forming a clear pattern'
+    },
+    severe: {
+        label: 'Severe',
+        color: '#EF4444', // red
+        icon: '🚫',
+        description: 'Pervasive manipulation and reality distortion'
+    }
+} as const;

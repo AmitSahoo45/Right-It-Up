@@ -28,8 +28,8 @@ export function ProfileCategoryBreakdown({ stats }: ProfileCategoryBreakdownProp
             <div className="space-y-4">
                 {sortedCategories.map(([category, stat]) => {
                     const categoryInfo = CATEGORY_OPTIONS.find(c => c.value === category);
-                    const winRate = stat.total > 0 
-                        ? Math.round((stat.wins / stat.total) * 100) 
+                    const winRate = stat.total > 0
+                        ? Math.round((stat.wins / stat.total) * 100)
                         : 0;
 
                     return (
@@ -124,7 +124,7 @@ function CategoryRow({ icon, label, wins, losses, draws, total, winRate }: Categ
             </div>
 
             {/* Hover details */}
-            <div className="hidden group-hover:flex items-center gap-4 mt-2 text-xs text-steel-grey">
+            <div className="flex lg:hidden lg:group-hover:flex items-center gap-4 mt-2 text-xs text-steel-grey">
                 <span className="text-verdict-green">{wins}W</span>
                 <span className="text-objection-red">{losses}L</span>
                 <span className="text-caution-amber">{draws}D</span>
