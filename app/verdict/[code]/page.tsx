@@ -1,7 +1,8 @@
+import { notFound, redirect } from 'next/navigation';
+
+import { AppealsSection } from '@/components';
 import { createClient } from '@/utils/supabase/server';
 import { getCaseWithVerdict } from '@/lib/db';
-import { notFound, redirect } from 'next/navigation';
-import { Navbar } from '@/components/Navbar';
 import { VerdictReceipt } from '@/components/VerdictReceipt';
 import { VerdictRuling } from '@/components/VerdictRuling';
 
@@ -24,7 +25,7 @@ export default async function VerdictPage({ params }: VerdictPageProps) {
 
     const { case: caseData, verdict } = result;
 
-    if (!verdict || caseData.status !== 'complete')  
+    if (!verdict || caseData.status !== 'complete')
         redirect(`/case/${code}`);
 
     return (
@@ -68,6 +69,15 @@ export default async function VerdictPage({ params }: VerdictPageProps) {
                             <VerdictRuling caseData={caseData} verdict={verdict} />
                         </div>
                     </div>
+
+                    <AppealsSection
+                        caseCode={caseData.code}
+                        partyAName={caseData.party_a_name}
+                        partyBName={caseData.party_b_name || 'Party B'}
+                        userId={user?.id}
+                        partyAId={caseData.party_a_id}
+                        partyBId={caseData.party_b_id}
+                    />
 
                     {/* New Case CTA */}
                     <div className="mt-12 text-center">

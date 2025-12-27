@@ -19,3 +19,7 @@ export { CaseExpiredView, CaseBlockedView } from './CaseStatusViews';
 // Verdict Components
 export { VerdictReceipt } from './VerdictReceipt';
 export { VerdictRuling } from './VerdictRuling';
+
+// Appeal Components
+export { AppealsSection } from './appeal/AppealsSection';
+export { AppealModal } from './appeal/AppealModal';

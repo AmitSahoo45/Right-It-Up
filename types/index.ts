@@ -1,6 +1,7 @@
 import { User } from '@supabase/supabase-js';
 
 export * from './profile';
+export * from './appeals';
 
 // ============================================
 // DATABASE TYPES
