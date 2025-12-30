@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import toast from 'react-hot-toast';
+
 import { EvidenceUploader } from './EvidenceUploader';
 import { useAuth } from '@/contexts/AuthContext';
 import type { Case, ResponseFormData } from '@/types';
@@ -14,8 +16,11 @@ interface CaseResponseFormProps {
 }
 
 export function CaseResponseForm({ caseCode, caseData }: CaseResponseFormProps) {
+    const MIN_EVIDENCE_IMAGES = 3;
+
     const router = useRouter();
     const { user, quota, refreshQuota } = useAuth();
+
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
@@ -33,6 +38,17 @@ export function CaseResponseForm({ caseCode, caseData }: CaseResponseFormProps) 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError(null);
+
+        if (!formData.name.trim() || !isValidLength) {
+            toast.error('Please fill in all required fields');
+            return;
+        }
+
+        if (!hasMinimumEvidence) {
+            toast.error(`Please upload at least ${MIN_EVIDENCE_IMAGES} evidence screenshots`);
+            return;
+        }
+
         setIsSubmitting(true);
 
         try {
@@ -49,31 +65,34 @@ export function CaseResponseForm({ caseCode, caseData }: CaseResponseFormProps) 
 
             const data = await response.json();
 
-            if (!response.ok || !data.success) {
-                setError(data.error || 'Failed to submit response');
-                setIsSubmitting(false);
-                return;
+            if (!response.ok) {
+                if (data.status === 'blocked_quota') {
+                    toast.error(data.error || 'Quota exceeded');
+                    return;
+                }
+                throw new Error(data.error || 'Failed to submit response');
             }
 
-            // Refresh quota after successful submission
             await refreshQuota();
 
-            // Redirect to verdict page
-            if (data.verdict_url) {
+            if (data.verdict_url)
                 router.push(data.verdict_url);
-            } else {
+            else
                 router.push(`/verdict/${caseCode}`);
-            }
 
+            toast.success('Response submitted! Generating verdict...');
         } catch (err) {
-            console.error('Submit error:', err);
+            toast.error(err instanceof Error ? err.message : 'Something went wrong');
             setError('Something went wrong. Please try again.');
+        }
+        finally {
             setIsSubmitting(false);
         }
     };
 
     const characterCount = formData.argument.length;
     const isValidLength = characterCount >= 20 && characterCount <= 5000;
+    const hasMinimumEvidence = formData.evidenceImages.length >= MIN_EVIDENCE_IMAGES;
 
     // Check if user can submit
     if (!quota.can_use) {
@@ -211,12 +230,14 @@ export function CaseResponseForm({ caseCode, caseData }: CaseResponseFormProps) 
                     imageEvidence={formData.evidenceImages}
                     onTextChange={(evidence) => setFormData(prev => ({ ...prev, evidenceText: evidence }))}
                     onImageChange={(evidence) => setFormData(prev => ({ ...prev, evidenceImages: evidence }))}
+                    minImages={MIN_EVIDENCE_IMAGES}
+                    maxImages={5}
                 />
 
                 {/* Submit Button */}
                 <button
                     type="submit"
-                    disabled={isSubmitting || !formData.name.trim() || !isValidLength}
+                    disabled={isSubmitting || !formData.name.trim() || !isValidLength || !hasMinimumEvidence}
                     className="w-full py-4 bg-gradient-to-r from-cyber-blue to-verdict-green text-white font-bold text-lg rounded-xl shadow-cyber-blue-glow hover:shadow-[0_0_40px_rgba(59,130,246,0.7)] transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none"
                 >
                     {isSubmitting ? (
@@ -227,12 +248,23 @@ export function CaseResponseForm({ caseCode, caseData }: CaseResponseFormProps) 
                             </svg>
                             Submitting & Generating Verdict...
                         </span>
+                    ) : !hasMinimumEvidence ? (
+                        <span className="flex items-center justify-center gap-2">
+                            📷 Upload {MIN_EVIDENCE_IMAGES - formData.evidenceImages.length} More Evidence Screenshot{MIN_EVIDENCE_IMAGES - formData.evidenceImages.length !== 1 ? 's' : ''}
+                        </span>
                     ) : (
                         <span className="flex items-center justify-center gap-2">
                             ⚖️ Submit & Get Verdict
                         </span>
                     )}
                 </button>
+
+                {/* Evidence requirement reminder */}
+                {!hasMinimumEvidence && (
+                    <p className="text-center text-caution-amber text-sm">
+                        ⚠️ Evidence screenshots are required. Text alone can be fabricated.
+                    </p>
+                )}
 
                 {/* Quota Info */}
                 <div className="text-center">

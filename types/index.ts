@@ -205,6 +205,7 @@ export interface EvidenceUploaderProps {
     imageEvidence: string[];
     onTextChange: (evidence: string[]) => void;
     onImageChange: (evidence: string[]) => void;
+    minImages?: number;
     maxImages?: number;
 }
 

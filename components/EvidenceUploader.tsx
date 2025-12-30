@@ -11,17 +11,26 @@ const EVIDENCE_TIPS = [
     { icon: '📸', label: 'Photos', desc: 'Physical evidence' },
 ];
 
+interface ExtendedEvidenceUploaderProps extends Omit<EvidenceUploaderProps, 'maxImages'> {
+    minImages?: number;
+    maxImages?: number;
+}
+
 export function EvidenceUploader({
     textEvidence,
     imageEvidence,
     onTextChange,
     onImageChange,
+    minImages = 3,
     maxImages = 5
-}: EvidenceUploaderProps) {
+}: ExtendedEvidenceUploaderProps) {
     const [newTextEvidence, setNewTextEvidence] = useState('');
     const [isUploading, setIsUploading] = useState(false);
     const [uploadError, setUploadError] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
+    
+    const imagesNeeded = Math.max(0, minImages - imageEvidence.length);
+    const hasMinimumImages = imageEvidence.length >= minImages;
     
     const addTextEvidence = () => {
         if (newTextEvidence.trim()) {
@@ -106,11 +115,31 @@ export function EvidenceUploader({
         <div className="space-y-4">
             <div>
                 <label className="block text-sm font-medium text-steel-grey mb-2">
-                    Evidence <span className="text-steel-grey/50">(optional but powerful!)</span>
+                    Evidence <span className="text-objection-red">*</span>
+                    <span className="text-steel-grey/70 ml-1">(minimum {minImages} screenshots required)</span>
                 </label>
                 <p className="text-xs text-steel-grey/70 mb-3">
-                    Upload screenshots of conversations and the AI will extract & analyze the text automatically
+                    Upload screenshots of conversations and the AI will extract & analyze the text automatically. 
+                    <span className="text-caution-amber"> Text alone can be fabricated, but images are real evidence!</span>
                 </p>
+            </div>
+            
+            {/* Progress indicator */}
+            <div className={`p-3 rounded-xl border ${hasMinimumImages ? 'bg-verdict-green/10 border-verdict-green/30' : 'bg-caution-amber/10 border-caution-amber/30'}`}>
+                <div className="flex items-center justify-between mb-2">
+                    <span className={`text-sm font-medium ${hasMinimumImages ? 'text-verdict-green' : 'text-caution-amber'}`}>
+                        {hasMinimumImages ? '✓ Minimum evidence uploaded' : `⚠️ ${imagesNeeded} more image${imagesNeeded !== 1 ? 's' : ''} required`}
+                    </span>
+                    <span className="text-xs text-steel-grey">
+                        {imageEvidence.length}/{maxImages}
+                    </span>
+                </div>
+                <div className="w-full h-2 bg-charcoal-layer rounded-full overflow-hidden">
+                    <div 
+                        className={`h-full transition-all duration-300 ${hasMinimumImages ? 'bg-verdict-green' : 'bg-caution-amber'}`}
+                        style={{ width: `${Math.min(100, (imageEvidence.length / minImages) * 100)}%` }}
+                    />
+                </div>
             </div>
             
             {/* 🆕 OCR Tips Banner */}
@@ -133,6 +162,9 @@ export function EvidenceUploader({
             
             {/* Text Evidence */}
             <div className="space-y-2">
+                <label className="block text-xs font-medium text-steel-grey/70">
+                    Additional text context <span className="text-steel-grey/50">(optional)</span>
+                </label>
                 <div className="flex gap-2">
                     <input
                         type="text"
@@ -140,24 +172,23 @@ export function EvidenceUploader({
                         onChange={(e) => setNewTextEvidence(e.target.value)}
                         onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addTextEvidence())}
                         placeholder="e.g., 'She agreed to split costs on Jan 5th'"
-                        className="flex-1 px-4 py-2 bg-charcoal-layer/50 border border-white/10 rounded-xl text-starlight-white placeholder:text-steel-grey/50 focus:outline-none focus:border-electric-violet/50 text-sm"
+                        className="flex-1 px-3 py-2 bg-charcoal-layer/50 border border-white/10 rounded-lg text-starlight-white text-sm placeholder:text-steel-grey/50 focus:outline-none focus:border-electric-violet/50"
                     />
                     <button
                         type="button"
                         onClick={addTextEvidence}
                         disabled={!newTextEvidence.trim()}
-                        className="px-4 py-2 bg-charcoal-layer border border-white/10 rounded-xl text-steel-grey hover:text-starlight-white hover:border-electric-violet/50 transition-all disabled:opacity-50"
+                        className="px-4 py-2 bg-charcoal-layer border border-white/10 rounded-lg text-steel-grey text-sm hover:border-electric-violet/50 hover:text-starlight-white transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         Add
                     </button>
                 </div>
                 
                 {textEvidence.length > 0 && (
-                    <div className="space-y-2">
-                        {textEvidence.map((evidence, index) => (
-                            <div key={index} className="flex items-center gap-2 p-2 bg-charcoal-layer/30 rounded-lg border border-white/5">
-                                <span className="text-caution-amber text-xs">📝</span>
-                                <span className="flex-1 text-starlight-white text-sm truncate">{evidence}</span>
+                    <div className="flex flex-wrap gap-2 mt-2">
+                        {textEvidence.map((text, index) => (
+                            <div key={index} className="inline-flex items-center gap-2 px-3 py-1.5 bg-charcoal-layer/50 border border-white/10 rounded-lg">
+                                <span className="text-sm text-steel-grey max-w-xs truncate">{text}</span>
                                 <button
                                     type="button"
                                     onClick={() => removeTextEvidence(index)}
@@ -189,7 +220,9 @@ export function EvidenceUploader({
                     className={`flex flex-col items-center justify-center gap-2 p-6 border-2 border-dashed rounded-xl cursor-pointer transition-all ${
                         isUploading
                             ? 'border-electric-violet/50 bg-electric-violet/10'
-                            : 'border-white/10 hover:border-electric-violet/50 hover:bg-charcoal-layer/30'
+                            : hasMinimumImages
+                                ? 'border-verdict-green/30 hover:border-verdict-green/50 hover:bg-verdict-green/5'
+                                : 'border-caution-amber/50 hover:border-electric-violet/50 hover:bg-charcoal-layer/30'
                     } ${imageEvidence.length >= maxImages ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
                     {isUploading ? (
@@ -207,14 +240,16 @@ export function EvidenceUploader({
                                 <span>🧾</span>
                                 <span>📄</span>
                             </div>
-                            <span className="text-starlight-white font-medium">
+                            <span className={`font-medium ${hasMinimumImages ? 'text-verdict-green' : 'text-caution-amber'}`}>
                                 {imageEvidence.length >= maxImages 
                                     ? 'Max images reached'
-                                    : 'Drop screenshots here or click to upload'
+                                    : hasMinimumImages
+                                        ? 'Add more evidence (optional)'
+                                        : `Upload ${imagesNeeded} more screenshot${imagesNeeded !== 1 ? 's' : ''}`
                                 }
                             </span>
                             <span className="text-steel-grey text-xs">
-                                Chat screenshots, receipts, documents • Max {maxImages} images • 5MB each
+                                Chat screenshots, receipts, documents • Min {minImages} • Max {maxImages} images • 5MB each
                             </span>
                         </>
                     )}
