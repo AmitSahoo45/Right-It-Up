@@ -12,6 +12,12 @@ import type {
 
 export { getClientIp, formatDate, getTimeRemaining } from './utils';
 
+// ============================================
+// CASE CODE GENERATION (Now handled by DB)
+// ============================================
+
+// Note: generateCaseCode is now handled server-side by the create_case RPC
+// Keeping this for backwards compatibility if needed
 export const generateCaseCode = async (): Promise<string> => {
     const supabase = await createClient();
     const { data, error } = await supabase.rpc('generate_case_code');
@@ -20,109 +26,163 @@ export const generateCaseCode = async (): Promise<string> => {
     return data;
 }
 
+// ============================================
+// CASE CREATION (Using secure RPC)
+// ============================================
+
 export const createCase = async (
     data: CreateCaseRequest,
     userId: string | null,
     clientIp: string
 ): Promise<{ code: string; id: string }> => {
     const supabase = await createClient();
-    const code = await generateCaseCode();
-
-    const { data: newCase, error } = await supabase
-        .from('cases')
-        .insert({
-            code,
-            category: data.category,
-            tone: data.tone,
-            party_a_id: userId,
-            party_a_name: data.party_a_name,
-            party_a_argument: data.party_a_argument,
-            party_a_evidence_text: data.party_a_evidence_text || [],
-            party_a_evidence_images: data.party_a_evidence_images || [],
-            party_a_ip: userId ? null : clientIp,
-            status: 'pending_response'
-        })
-        .select('id, code')
-        .single();
+    
+    // Use the secure create_case RPC
+    const { data: result, error } = await supabase.rpc('create_case', {
+        p_party_a_name: data.party_a_name,
+        p_party_a_argument: data.party_a_argument,
+        p_category: data.category || 'general',
+        p_tone: data.tone || 'neutral',
+        p_party_a_evidence_text: data.party_a_evidence_text || [],
+        p_party_a_evidence_images: data.party_a_evidence_images || [],
+        p_party_a_ip: userId ? null : clientIp
+    });
 
     if (error) throw new Error(`Failed to create case: ${error.message}`);
-    return newCase;
+    
+    if (!result || !result.success) {
+        throw new Error('Failed to create case: RPC returned unsuccessful result');
+    }
+    
+    return { 
+        code: result.code, 
+        id: result.case_id 
+    };
 }
+
+// ============================================
+// CASE RETRIEVAL
+// ============================================
 
 export const getCaseByCode = async (code: string): Promise<Case | null> => {
     const supabase = await createClient();
 
-    const { data, error } = await supabase
-        .from('cases')
-        .select('*')
-        .eq('code', code)
-        .single();
+    // Use the secure RPC for case retrieval
+    const { data, error } = await supabase.rpc('get_case_with_verdict', {
+        p_code: code
+    });
 
     if (error) {
-        if (error.code === 'PGRST116') return null;
         throw new Error(`Failed to get case: ${error.message}`);
     }
 
-    return data;
+    if (!data || data.length === 0) {
+        return null;
+    }
+
+    return data[0].case_data as Case;
 }
 
 export const getCaseWithVerdict = async (code: string): Promise<{ case: Case; verdict: Verdict | null } | null> => {
     const supabase = await createClient();
 
-    const { data: caseData, error: caseError } = await supabase
-        .from('cases')
-        .select('*')
-        .eq('code', code)
-        .single();
+    // Use the secure RPC
+    const { data, error } = await supabase.rpc('get_case_with_verdict', {
+        p_code: code
+    });
 
-    if (caseError) {
-        if (caseError.code === 'PGRST116') return null;
-        throw new Error(`Failed to get case: ${caseError.message}`);
+    if (error) {
+        throw new Error(`Failed to get case: ${error.message}`);
     }
 
-    const { data: verdictData } = await supabase
-        .from('verdicts')
-        .select('*')
-        .eq('case_id', caseData.id)
-        .single();
+    if (!data || data.length === 0) {
+        return null;
+    }
 
-    return { case: caseData, verdict: verdictData || null };
+    const row = data[0];
+    return { 
+        case: row.case_data as Case, 
+        verdict: row.verdict_data as Verdict | null 
+    };
 }
+
+// ============================================
+// PARTY B RESPONSE (Using secure RPC)
+// ============================================
 
 export const submitResponse = async (
     caseId: string,
     data: RespondCaseRequest,
     userId: string | null,
-    clientIp: string
-): Promise<void> => {
+    clientIp: string,
+    caseCode: string
+): Promise<{ success: boolean; error?: string }> => {
     const supabase = await createClient();
 
-    const { error } = await supabase
-        .from('cases')
-        .update({
-            party_b_id: userId,
-            party_b_name: data.party_b_name,
-            party_b_argument: data.party_b_argument,
-            party_b_evidence_text: data.party_b_evidence_text || [],
-            party_b_evidence_images: data.party_b_evidence_images || [],
-            party_b_ip: userId ? null : clientIp,
-            responded_at: new Date().toISOString()
-        })
-        .eq('id', caseId)
-        .eq('status', 'pending_response');
+    // Use the secure submit_party_b_response RPC
+    const { data: result, error } = await supabase.rpc('submit_party_b_response', {
+        p_code: caseCode,
+        p_party_b_name: data.party_b_name,
+        p_party_b_argument: data.party_b_argument,
+        p_party_b_evidence_text: data.party_b_evidence_text || [],
+        p_party_b_evidence_images: data.party_b_evidence_images || [],
+        p_party_b_ip: userId ? null : clientIp
+    });
 
-    if (error) throw new Error(`Failed to submit response: ${error.message}`);
+    if (error) {
+        throw new Error(`Failed to submit response: ${error.message}`);
+    }
+
+    if (!result || !result.success) {
+        return { 
+            success: false, 
+            error: result?.error || 'Failed to submit response' 
+        };
+    }
+
+    return { success: true };
 }
+
+// Legacy function signature for backwards compatibility
+// Note: caseId is now ignored, caseCode is required
+export const submitResponseLegacy = async (
+    caseId: string,
+    data: RespondCaseRequest,
+    userId: string | null,
+    clientIp: string
+): Promise<void> => {
+    // This is kept for any code that still uses the old signature
+    // It will fail since we don't have the code
+    throw new Error('submitResponseLegacy is deprecated. Use submitResponse with caseCode parameter.');
+}
+
+// ============================================
+// CASE STATUS UPDATE
+// ============================================
 
 export async function updateCaseStatus(caseId: string, status: CaseStatus): Promise<void> {
     const supabase = await createClient();
 
+    // Check if we have an RPC for this, otherwise use direct update for authenticated users
     const { error } = await supabase.rpc('update_case_status', {
         p_case_id: caseId,
         p_status: status
     });
 
-    if (error) throw new Error(`Failed to update case status: ${error.message}`);
+    if (error) {
+        // Fallback to direct update if RPC doesn't exist
+        const { error: updateError } = await supabase
+            .from('cases')
+            .update({ 
+                status,
+                ...(status === 'complete' ? { completed_at: new Date().toISOString() } : {})
+            })
+            .eq('id', caseId);
+        
+        if (updateError) {
+            throw new Error(`Failed to update case status: ${updateError.message}`);
+        }
+    }
 }
 
 // ============================================

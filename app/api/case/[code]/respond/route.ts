@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@/utils/supabase/server';
 import {
     getCaseByCode,
+    getCaseWithVerdict,
     submitResponse,
     updateCaseStatus,
     canBothPartiesAffordVerdict,
@@ -53,14 +54,17 @@ export async function POST(
         const supabase = await createClient();
         const { data: { user } } = await supabase.auth.getUser();
 
-        const caseData = await getCaseByCode(code);
+        // Use secure RPC to get case data
+        const caseResult = await getCaseWithVerdict(code);
 
-        if (!caseData) {
+        if (!caseResult) {
             return NextResponse.json(
                 { success: false, error: 'Case not found' },
                 { status: 404 }
             );
         }
+
+        const caseData = caseResult.case;
 
         if (caseData.status === 'expired') {
             return NextResponse.json(
@@ -143,7 +147,8 @@ export async function POST(
         const evidenceText = sanitizeEvidenceText(body.party_b_evidence_text || []);
         const evidenceImages = sanitizeUrls(body.party_b_evidence_images || []).slice(0, 5);
 
-        await submitResponse(
+        // Use the secure RPC to submit response (pass code, not caseId)
+        const submitResult = await submitResponse(
             caseData.id,
             {
                 party_b_name: sanitizedName,
@@ -152,13 +157,24 @@ export async function POST(
                 party_b_evidence_images: evidenceImages
             },
             user?.id || null,
-            clientIp
+            clientIp,
+            code  // Pass the case code for the secure RPC
         );
 
-        const updatedCase = await getCaseByCode(code);
-        if (!updatedCase) {
+        if (!submitResult.success) {
+            return NextResponse.json(
+                { success: false, error: submitResult.error || 'Failed to submit response' },
+                { status: 400 }
+            );
+        }
+
+        // Re-fetch the updated case data
+        const updatedCaseResult = await getCaseWithVerdict(code);
+        if (!updatedCaseResult) {
             throw new Error('Case disappeared after response submission');
         }
+        
+        const updatedCase = updatedCaseResult.case;
 
         const quotaCheck = await canBothPartiesAffordVerdict(updatedCase);
 

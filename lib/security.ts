@@ -1,4 +1,5 @@
-// HTML entities to escape
+import DOMPurify from 'isomorphic-dompurify';
+
 const HTML_ENTITIES: Record<string, string> = {
     '&': '&amp;',
     '<': '&lt;',
@@ -28,19 +29,16 @@ export function stripHtml(str: string): string {
 // Use this for user-provided text that will be stored in the database
 export function sanitizeInput(input: string, maxLength: number = 5000): string {
     if (typeof input !== 'string') return '';
-
-    return input
+    
+    input = input
         .trim()
         .slice(0, maxLength)
         // Remove null bytes and other control characters (except newlines and tabs)
         .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '')
         // Normalize whitespace (multiple spaces to single, preserve newlines)
         .replace(/[^\S\n]+/g, ' ')
-        // Remove potential script injection patterns
-        .replace(/javascript:/gi, '')
-        .replace(/data:/gi, '')
-        .replace(/vbscript:/gi, '')
-        .replace(/on\w+\s*=/gi, ''); // Remove event handlers like onclick=
+        
+    return DOMPurify.sanitize(input, { ALLOWED_TAGS: [], ALLOWED_ATTR: [] });
 }
 
 // Sanitize input and also strip HTML tags

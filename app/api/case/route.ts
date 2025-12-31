@@ -81,6 +81,7 @@ export async function POST(request: Request): Promise<NextResponse<CreateCaseRes
         const category = validCategories.includes(body.category) ? body.category : 'general';
         const tone = validTones.includes(body.tone) ? body.tone : 'neutral';
 
+        // Uses secure create_case RPC internally
         const newCase = await createCase(
             {
                 category,

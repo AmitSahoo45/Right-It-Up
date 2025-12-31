@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/utils/supabase/server';
 import { getCaseWithVerdict, getClientIp } from '@/lib/db';
+import { sanitizeCaseCode } from '@/lib/security';
 import type { GetCaseResponse } from '@/types';
 
 export async function GET(
@@ -8,12 +9,22 @@ export async function GET(
     { params }: { params: Promise<{ code: string }> }
 ): Promise<NextResponse<GetCaseResponse>> {
     try {
-        const { code } = await params;
+        const { code: rawCode } = await params;
+        
+        // Validate and sanitize case code (supports both old and new formats)
+        const code = sanitizeCaseCode(rawCode);
+        if (!code) {
+            return NextResponse.json(
+                { success: false, error: 'Invalid case code format' },
+                { status: 400 }
+            );
+        }
+        
         const supabase = await createClient();
         const { data: { user } } = await supabase.auth.getUser();
         const clientIp = getClientIp(request);
         
-        // Get case with verdict
+        // Get case with verdict using secure RPC
         const result = await getCaseWithVerdict(code);
         
         if (!result) {
