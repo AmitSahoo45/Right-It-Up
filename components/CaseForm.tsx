@@ -1,12 +1,14 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 
 import { ToneSelector } from './ToneSelector';
 import { CategorySelector } from './CategorySelector';
 import { EvidenceUploader } from './EvidenceUploader';
+import { HoneypotFields } from './HoneypotFields';
+import { generateFormToken, HONEYPOT_FIELDS } from '@/lib/honeypot';
 import type { VerdictTone, DisputeCategory, CaseFormData } from '@/types';
 
 export function CaseForm() {
@@ -14,6 +16,12 @@ export function CaseForm() {
     const router = useRouter();
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    
+    const [honeypot, setHoneypot] = useState({
+        [HONEYPOT_FIELDS.TEXT]: '',
+        [HONEYPOT_FIELDS.EMAIL]: '',
+        [HONEYPOT_FIELDS.TIMESTAMP]: '',
+    });
 
     const [formData, setFormData] = useState<CaseFormData>({
         category: 'general',
@@ -23,6 +31,13 @@ export function CaseForm() {
         evidenceText: [],
         evidenceImages: []
     });
+    
+    useEffect(() => {
+        setHoneypot(prev => ({
+            ...prev,
+            [HONEYPOT_FIELDS.TIMESTAMP]: generateFormToken(),
+        }));
+    }, []);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -49,7 +64,10 @@ export function CaseForm() {
                     party_a_name: formData.name,
                     party_a_argument: formData.argument,
                     party_a_evidence_text: formData.evidenceText,
-                    party_a_evidence_images: formData.evidenceImages
+                    party_a_evidence_images: formData.evidenceImages,
+                    [HONEYPOT_FIELDS.TEXT]: honeypot[HONEYPOT_FIELDS.TEXT],
+                    [HONEYPOT_FIELDS.EMAIL]: honeypot[HONEYPOT_FIELDS.EMAIL],
+                    [HONEYPOT_FIELDS.TIMESTAMP]: honeypot[HONEYPOT_FIELDS.TIMESTAMP],
                 })
             });
 
@@ -79,6 +97,11 @@ export function CaseForm() {
 
     return (
         <form onSubmit={handleSubmit} className="space-y-6">
+            <HoneypotFields
+                values={honeypot}
+                onChange={(field, value) => setHoneypot(prev => ({ ...prev, [field]: value }))}
+            />
+            
             {/* Error Display */}
             {error && (
                 <div className="p-4 bg-objection-red/10 border border-objection-red/30 rounded-xl">
@@ -154,7 +177,11 @@ export function CaseForm() {
             <button
                 type="submit"
                 disabled={isSubmitting || !formData.name.trim() || !isValidLength || !hasMinimumEvidence}
-                className="w-full py-4 bg-gradient-to-r from-electric-violet to-cyber-blue text-white font-bold text-lg rounded-xl shadow-electric-glow hover:shadow-[0_0_40px_rgba(124,58,237,0.7)] transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none"
+                className={`w-full py-4 rounded-xl font-semibold text-lg transition-all ${
+                    isSubmitting || !formData.name.trim() || !isValidLength || !hasMinimumEvidence
+                        ? 'bg-steel-grey/30 text-steel-grey/50 cursor-not-allowed'
+                        : 'bg-gradient-to-r from-electric-violet to-neon-cyan text-midnight-ink hover:shadow-lg hover:shadow-electric-violet/25'
+                }`}
             >
                 {isSubmitting ? (
                     <span className="flex items-center justify-center gap-2">
