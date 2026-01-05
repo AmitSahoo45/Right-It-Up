@@ -1,0 +1,162 @@
+[
+    {
+        "schemaname": "public",
+        "tablename": "user_stats",
+        "policyname": "Users can view own stats",
+        "permissive": "PERMISSIVE",
+        "roles": "{public}",
+        "cmd": "SELECT",
+        "qual": "(auth.uid() = user_id)",
+        "with_check": null
+    },
+    {
+        "schemaname": "public",
+        "tablename": "user_stats",
+        "policyname": "System can manage stats",
+        "permissive": "PERMISSIVE",
+        "roles": "{public}",
+        "cmd": "ALL",
+        "qual": "true",
+        "with_check": null
+    },
+    {
+        "schemaname": "public",
+        "tablename": "user_badges",
+        "policyname": "Users can view own badges",
+        "permissive": "PERMISSIVE",
+        "roles": "{public}",
+        "cmd": "SELECT",
+        "qual": "(auth.uid() = user_id)",
+        "with_check": null
+    },
+    {
+        "schemaname": "public",
+        "tablename": "user_badges",
+        "policyname": "System can insert badges",
+        "permissive": "PERMISSIVE",
+        "roles": "{public}",
+        "cmd": "INSERT",
+        "qual": null,
+        "with_check": "true"
+    },
+    {
+        "schemaname": "public",
+        "tablename": "user_case_history",
+        "policyname": "Users can view own history",
+        "permissive": "PERMISSIVE",
+        "roles": "{public}",
+        "cmd": "SELECT",
+        "qual": "(auth.uid() = user_id)",
+        "with_check": null
+    },
+    {
+        "schemaname": "public",
+        "tablename": "user_case_history",
+        "policyname": "System can insert history",
+        "permissive": "PERMISSIVE",
+        "roles": "{public}",
+        "cmd": "INSERT",
+        "qual": null,
+        "with_check": "true"
+    },
+    {
+        "schemaname": "public",
+        "tablename": "appeals",
+        "policyname": "Users can view appeals for their cases",
+        "permissive": "PERMISSIVE",
+        "roles": "{public}",
+        "cmd": "SELECT",
+        "qual": "(EXISTS ( SELECT 1\n   FROM cases c\n  WHERE ((c.id = appeals.case_id) AND ((c.party_a_id = auth.uid()) OR (c.party_b_id = auth.uid())))))",
+        "with_check": null
+    },
+    {
+        "schemaname": "public",
+        "tablename": "appeals",
+        "policyname": "Users can submit appeals for their cases",
+        "permissive": "PERMISSIVE",
+        "roles": "{public}",
+        "cmd": "INSERT",
+        "qual": null,
+        "with_check": "((appellant_id = auth.uid()) AND (EXISTS ( SELECT 1\n   FROM cases c\n  WHERE ((c.id = appeals.case_id) AND ((((appeals.appealing_party)::text = 'partyA'::text) AND (c.party_a_id = auth.uid())) OR (((appeals.appealing_party)::text = 'partyB'::text) AND (c.party_b_id = auth.uid())))))))"
+    },
+    {
+        "schemaname": "public",
+        "tablename": "appeals",
+        "policyname": "Service role can update appeals",
+        "permissive": "PERMISSIVE",
+        "roles": "{public}",
+        "cmd": "UPDATE",
+        "qual": "true",
+        "with_check": "true"
+    },
+    {
+        "schemaname": "public",
+        "tablename": "verdict_usage",
+        "policyname": "Users see own usage",
+        "permissive": "PERMISSIVE",
+        "roles": "{public}",
+        "cmd": "SELECT",
+        "qual": "((auth.uid() = user_id) OR (user_id IS NULL))",
+        "with_check": null
+    },
+    {
+        "schemaname": "public",
+        "tablename": "verdict_usage",
+        "policyname": "System can insert usage",
+        "permissive": "PERMISSIVE",
+        "roles": "{public}",
+        "cmd": "INSERT",
+        "qual": null,
+        "with_check": "true"
+    },
+    {
+        "schemaname": "public",
+        "tablename": "cases",
+        "policyname": "Authenticated participants can view their cases",
+        "permissive": "PERMISSIVE",
+        "roles": "{public}",
+        "cmd": "SELECT",
+        "qual": "((auth.uid() IS NOT NULL) AND ((auth.uid() = party_a_id) OR (auth.uid() = party_b_id)))",
+        "with_check": null
+    },
+    {
+        "schemaname": "public",
+        "tablename": "cases",
+        "policyname": "Anyone can create cases",
+        "permissive": "PERMISSIVE",
+        "roles": "{public}",
+        "cmd": "INSERT",
+        "qual": null,
+        "with_check": "true"
+    },
+    {
+        "schemaname": "public",
+        "tablename": "cases",
+        "policyname": "Participants can update their cases",
+        "permissive": "PERMISSIVE",
+        "roles": "{public}",
+        "cmd": "UPDATE",
+        "qual": "((auth.uid() IS NOT NULL) AND ((auth.uid() = party_a_id) OR (auth.uid() = party_b_id)))",
+        "with_check": null
+    },
+    {
+        "schemaname": "public",
+        "tablename": "verdicts",
+        "policyname": "Participants can view verdicts",
+        "permissive": "PERMISSIVE",
+        "roles": "{public}",
+        "cmd": "SELECT",
+        "qual": "(EXISTS ( SELECT 1\n   FROM cases c\n  WHERE ((c.id = verdicts.case_id) AND (auth.uid() IS NOT NULL) AND ((auth.uid() = c.party_a_id) OR (auth.uid() = c.party_b_id)))))",
+        "with_check": null
+    },
+    {
+        "schemaname": "public",
+        "tablename": "verdicts",
+        "policyname": "System can create verdicts",
+        "permissive": "PERMISSIVE",
+        "roles": "{public}",
+        "cmd": "INSERT",
+        "qual": null,
+        "with_check": "true"
+    }
+]
