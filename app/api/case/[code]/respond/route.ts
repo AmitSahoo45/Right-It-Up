@@ -21,6 +21,12 @@ import {
     detectPromptInjection,
     safeLogExcerpt,
 } from '@/lib/security';
+import {
+    validateHoneypot,
+    extractHoneypotData,
+    generateFakeSuccessResponse,
+    logBotDetection
+} from '@/lib/honeypot';
 import { rateLimitVerdict, getRateLimitHeaders, getClientIpFromRequest } from '@/lib/ratelimit';
 import type { RespondCaseRequest, RespondCaseResponse, Dispute, AIVerdictResponse } from '@/types';
 
@@ -101,15 +107,32 @@ export async function POST(
             );
         }
 
-        let body: RespondCaseRequest;
+        let rawBody: Record<string, unknown>;
         try {
-            body = await request.json();
+            rawBody = await request.json();
         } catch {
             return NextResponse.json(
                 { success: false, error: 'Invalid request body' },
                 { status: 400 }
             );
         }
+
+        // Extract and validate honeypot fields
+        const { honeypotData, cleanBody } = extractHoneypotData(rawBody);
+        const honeypotResult = validateHoneypot(honeypotData);
+
+        if (honeypotResult.isBot) {
+            // Log the bot detection for monitoring
+            logBotDetection(clientIp, honeypotResult, `POST /api/case/${code}/respond`);
+
+            // Return fake success to avoid revealing detection
+            return NextResponse.json(
+                generateFakeSuccessResponse('response') as RespondCaseResponse,
+                { status: 200 }
+            );
+        }
+
+        const body = cleanBody as RespondCaseRequest;
 
         const sanitizedName = sanitizeName(body.party_b_name);
         if (!sanitizedName || sanitizedName.length < 1) {

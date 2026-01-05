@@ -1,12 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 
 import { ToneSelector } from './ToneSelector';
 import { CategorySelector } from './CategorySelector';
 import { EvidenceUploader } from './EvidenceUploader';
+import { HoneypotFields, HoneypotValues } from './HoneypotFields';
 import type { VerdictTone, DisputeCategory, CaseFormData } from '@/types';
 
 export function CaseForm() {
@@ -23,6 +24,12 @@ export function CaseForm() {
         evidenceText: [],
         evidenceImages: []
     });
+
+    // Honeypot state for bot detection
+    const [honeypotValues, setHoneypotValues] = useState<HoneypotValues>({});
+    const handleHoneypotChange = useCallback((values: HoneypotValues) => {
+        setHoneypotValues(values);
+    }, []);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -49,7 +56,9 @@ export function CaseForm() {
                     party_a_name: formData.name,
                     party_a_argument: formData.argument,
                     party_a_evidence_text: formData.evidenceText,
-                    party_a_evidence_images: formData.evidenceImages
+                    party_a_evidence_images: formData.evidenceImages,
+                    // Include honeypot fields for bot detection
+                    ...honeypotValues
                 })
             });
 
@@ -79,6 +88,9 @@ export function CaseForm() {
 
     return (
         <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Honeypot fields for bot detection */}
+            <HoneypotFields onValuesChange={handleHoneypotChange} />
+
             {/* Error Display */}
             {error && (
                 <div className="p-4 bg-objection-red/10 border border-objection-red/30 rounded-xl">

@@ -10,6 +10,12 @@ import {
     detectPromptInjection,
     safeLogExcerpt
 } from '@/lib/security';
+import {
+    validateHoneypot,
+    extractHoneypotData,
+    generateFakeSuccessResponse,
+    logBotDetection
+} from '@/lib/honeypot';
 import { rateLimitCaseCreation, getRateLimitHeaders, getClientIpFromRequest } from '@/lib/ratelimit';
 import type { CreateCaseRequest, CreateCaseResponse } from '@/types';
 
@@ -31,7 +37,24 @@ export async function POST(request: Request): Promise<NextResponse<CreateCaseRes
         const supabase = await createClient();
         const { data: { user } } = await supabase.auth.getUser();
 
-        const body: CreateCaseRequest = await request.json();
+        const rawBody = await request.json();
+
+        // Extract and validate honeypot fields
+        const { honeypotData, cleanBody } = extractHoneypotData(rawBody);
+        const honeypotResult = validateHoneypot(honeypotData);
+
+        if (honeypotResult.isBot) {
+            // Log the bot detection for monitoring
+            logBotDetection(clientIp, honeypotResult, 'POST /api/case');
+
+            // Return fake success to avoid revealing detection
+            return NextResponse.json(
+                generateFakeSuccessResponse('case') as CreateCaseResponse,
+                { status: 200 }
+            );
+        }
+
+        const body = cleanBody as CreateCaseRequest;
 
         const sanitizedName = sanitizeName(body.party_a_name);
         if (!sanitizedName || sanitizedName.length < 1) {

@@ -1,11 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
 
 import { EvidenceUploader } from './EvidenceUploader';
+import { HoneypotFields, HoneypotValues } from './HoneypotFields';
 import { useAuth } from '@/contexts/AuthContext';
 import type { Case, ResponseFormData } from '@/types';
 import { CATEGORY_OPTIONS, TONE_OPTIONS, JUDGE_PERSONAS } from '@/types';
@@ -30,6 +31,12 @@ export function CaseResponseForm({ caseCode, caseData }: CaseResponseFormProps) 
         evidenceText: [],
         evidenceImages: []
     });
+
+    // Honeypot state for bot detection
+    const [honeypotValues, setHoneypotValues] = useState<HoneypotValues>({});
+    const handleHoneypotChange = useCallback((values: HoneypotValues) => {
+        setHoneypotValues(values);
+    }, []);
 
     const category = CATEGORY_OPTIONS.find(c => c.value === caseData.category);
     const tone = TONE_OPTIONS.find(t => t.value === caseData.tone);
@@ -59,7 +66,9 @@ export function CaseResponseForm({ caseCode, caseData }: CaseResponseFormProps) 
                     party_b_name: formData.name,
                     party_b_argument: formData.argument,
                     party_b_evidence_text: formData.evidenceText,
-                    party_b_evidence_images: formData.evidenceImages
+                    party_b_evidence_images: formData.evidenceImages,
+                    // Include honeypot fields for bot detection
+                    ...honeypotValues
                 })
             });
 
@@ -175,6 +184,9 @@ export function CaseResponseForm({ caseCode, caseData }: CaseResponseFormProps) 
 
             {/* Response Form */}
             <form onSubmit={handleSubmit} className="space-y-6">
+                {/* Honeypot fields for bot detection */}
+                <HoneypotFields onValuesChange={handleHoneypotChange} />
+
                 {/* Error Display */}
                 {error && (
                     <div className="p-4 bg-objection-red/10 border border-objection-red/30 rounded-xl">
