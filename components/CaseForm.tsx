@@ -7,13 +7,17 @@ import toast from 'react-hot-toast';
 import { ToneSelector } from './ToneSelector';
 import { CategorySelector } from './CategorySelector';
 import { EvidenceUploader } from './EvidenceUploader';
+import { useHoneypot } from '@/hooks/useHoneypot';
 import type { VerdictTone, DisputeCategory, CaseFormData } from '@/types';
 
 export function CaseForm() {
     const MIN_EVIDENCE_IMAGES = 3;
     const router = useRouter();
+
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
+
+    const { HoneypotFields, getHoneypotData } = useHoneypot();
 
     const [formData, setFormData] = useState<CaseFormData>({
         category: 'general',
@@ -49,7 +53,8 @@ export function CaseForm() {
                     party_a_name: formData.name,
                     party_a_argument: formData.argument,
                     party_a_evidence_text: formData.evidenceText,
-                    party_a_evidence_images: formData.evidenceImages
+                    party_a_evidence_images: formData.evidenceImages,
+                    ...getHoneypotData()
                 })
             });
 
@@ -79,6 +84,8 @@ export function CaseForm() {
 
     return (
         <form onSubmit={handleSubmit} className="space-y-6">
+            <HoneypotFields />
+            
             {/* Error Display */}
             {error && (
                 <div className="p-4 bg-objection-red/10 border border-objection-red/30 rounded-xl">

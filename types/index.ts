@@ -403,3 +403,30 @@ export const GASLIGHTING_SEVERITY_CONFIG = {
         description: 'Pervasive manipulation and reality distortion'
     }
 } as const;
+
+export const HONEYPOT_FIELD_NAMES = {
+    website: '_website_url',
+    email: '_contact_email',
+    phone: '_phone_number',
+    timestamp: '_form_timestamp',
+} as const;
+
+ 
+export interface HoneypotData {
+    [HONEYPOT_FIELD_NAMES.website]?: string;
+    [HONEYPOT_FIELD_NAMES.email]?: string;
+    [HONEYPOT_FIELD_NAMES.phone]?: string;
+    [HONEYPOT_FIELD_NAMES.timestamp]?: string;
+}
+
+export interface HoneypotValidationResult {
+    isBot: boolean;
+    reason?: string;
+    
+    // For logging/analytics
+    details: {
+        filledHoneypots: string[];
+        timingMs: number | null;
+        timingValid: boolean;
+    };
+}

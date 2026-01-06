@@ -7,6 +7,8 @@ import toast from 'react-hot-toast';
 
 import { EvidenceUploader } from './EvidenceUploader';
 import { useAuth } from '@/contexts/AuthContext';
+import { useHoneypot } from '@/hooks/useHoneypot';
+
 import type { Case, ResponseFormData } from '@/types';
 import { CATEGORY_OPTIONS, TONE_OPTIONS, JUDGE_PERSONAS } from '@/types';
 
@@ -20,6 +22,7 @@ export function CaseResponseForm({ caseCode, caseData }: CaseResponseFormProps) 
 
     const router = useRouter();
     const { user, quota, refreshQuota } = useAuth();
+    const { HoneypotFields, getHoneypotData } = useHoneypot();
 
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -59,7 +62,8 @@ export function CaseResponseForm({ caseCode, caseData }: CaseResponseFormProps) 
                     party_b_name: formData.name,
                     party_b_argument: formData.argument,
                     party_b_evidence_text: formData.evidenceText,
-                    party_b_evidence_images: formData.evidenceImages
+                    party_b_evidence_images: formData.evidenceImages,
+                    ...getHoneypotData()
                 })
             });
 
@@ -175,6 +179,8 @@ export function CaseResponseForm({ caseCode, caseData }: CaseResponseFormProps) 
 
             {/* Response Form */}
             <form onSubmit={handleSubmit} className="space-y-6">
+                <HoneypotFields />
+                
                 {/* Error Display */}
                 {error && (
                     <div className="p-4 bg-objection-red/10 border border-objection-red/30 rounded-xl">

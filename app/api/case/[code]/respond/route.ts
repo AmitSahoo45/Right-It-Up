@@ -21,6 +21,12 @@ import {
     detectPromptInjection,
     safeLogExcerpt,
 } from '@/lib/security';
+import {
+    validateHoneypot,
+    extractHoneypotData,
+    logBotDetection,
+    createFakeSuccessResponse
+} from '@/lib/honeypot/honeypot';
 import { rateLimitVerdict, getRateLimitHeaders, getClientIpFromRequest } from '@/lib/ratelimit';
 import type { RespondCaseRequest, RespondCaseResponse, Dispute, AIVerdictResponse } from '@/types';
 
@@ -108,6 +114,16 @@ export async function POST(
             return NextResponse.json(
                 { success: false, error: 'Invalid request body' },
                 { status: 400 }
+            );
+        }
+        
+        const honeypotData = extractHoneypotData(body as unknown as Record<string, unknown>);
+        const honeypotResult = validateHoneypot(honeypotData);
+        if (honeypotResult.isBot) {
+            logBotDetection(clientIp, `/api/case/${code}/respond`, honeypotResult);
+            return NextResponse.json(
+                createFakeSuccessResponse('response') as RespondCaseResponse,
+                { status: 200 }
             );
         }
 
