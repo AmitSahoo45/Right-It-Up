@@ -55,9 +55,9 @@ export default function TermsOfServicePage() {
                         <section>
                             <h2 className="text-2xl font-bold text-starlight-white mb-4">4. User Accounts & Authentication</h2>
                             <p className="text-steel-grey leading-relaxed">
-                                You may use the Service as a guest with limited functionality or create an account via Google OAuth.
+                                You must create an account via Google OAuth to use the Service.
                                 You are responsible for maintaining the security of your account credentials.
-                                Guest users receive one free verdict; authenticated users receive five verdicts per day.
+                                Authenticated users receive five verdicts per day.
                                 Account sharing or automated access is prohibited.
                             </p>
                         </section>

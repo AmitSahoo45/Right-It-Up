@@ -99,26 +99,36 @@ export function CaseResponseForm({ caseCode, caseData }: CaseResponseFormProps) 
     const hasMinimumEvidence = formData.evidenceImages.length >= MIN_EVIDENCE_IMAGES;
 
     // Check if user can submit
+    if (!user) {
+        return (
+            <div className="text-center">
+                <div className="text-6xl mb-6">🔐</div>
+                <h1 className="text-3xl font-black text-starlight-white mb-4">
+                    Sign In Required
+                </h1>
+                <p className="text-steel-grey mb-8">
+                    Please sign in to respond to this case. You&apos;ll get 5 verdicts per day!
+                </p>
+                <Link
+                    href="/login"
+                    className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-electric-violet to-cyber-blue text-white font-bold rounded-xl hover:shadow-electric-glow transition-all"
+                >
+                    Sign In to Continue
+                </Link>
+            </div>
+        );
+    }
+
     if (!quota.can_use) {
         return (
             <div className="text-center">
                 <div className="text-6xl mb-6">🚫</div>
                 <h1 className="text-3xl font-black text-starlight-white mb-4">
-                    {user ? 'Daily Limit Reached' : 'Sign In Required'}
+                    Daily Limit Reached
                 </h1>
                 <p className="text-steel-grey mb-8">
-                    {user
-                        ? "You've used all 5 verdicts for today. Come back tomorrow!"
-                        : "You've already used your free verdict. Sign in to get 5 per day!"}
+                    You&apos;ve used all 5 verdicts for today. Come back tomorrow!
                 </p>
-                {!user && (
-                    <Link
-                        href="/login"
-                        className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-electric-violet to-cyber-blue text-white font-bold rounded-xl hover:shadow-electric-glow transition-all"
-                    >
-                        Sign In to Continue
-                    </Link>
-                )}
             </div>
         );
     }
@@ -180,7 +190,7 @@ export function CaseResponseForm({ caseCode, caseData }: CaseResponseFormProps) 
             {/* Response Form */}
             <form onSubmit={handleSubmit} className="space-y-6">
                 <HoneypotFields />
-                
+
                 {/* Error Display */}
                 {error && (
                     <div className="p-4 bg-objection-red/10 border border-objection-red/30 rounded-xl">

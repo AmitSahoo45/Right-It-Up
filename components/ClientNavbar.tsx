@@ -83,18 +83,6 @@ export function ClientNavbar() {
                         </>
                     ) : (
                         <>
-                            <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border ${quota.remaining > 0
-                                ? 'bg-caution-amber/10 border-caution-amber/20'
-                                : 'bg-objection-red/10 border-objection-red/20'
-                                }`}>
-                                <span className={`text-xs font-medium ${quota.remaining > 0
-                                    ? 'text-caution-amber'
-                                    : 'text-objection-red'
-                                    }`}>
-                                    {quota.remaining > 0 ? '🎁 1 free verdict' : '0 verdicts left'}
-                                </span>
-                            </div>
-
                             <Link
                                 href="/login"
                                 className="group relative px-5 py-2 bg-gradient-to-r from-electric-violet to-cyber-blue text-white rounded-xl text-sm font-bold overflow-hidden transition-all hover:shadow-electric-glow"
@@ -162,21 +150,19 @@ export function ClientNavbar() {
                         </div>
                     ) : (
                         <div className="space-y-3">
-                            <div className={`flex items-center justify-center gap-2 p-3 rounded-xl border ${quota.remaining > 0 ? 'bg-caution-amber/10 border-caution-amber/20' : 'bg-objection-red/10 border-objection-red/20'
-                                }`}>
-                                <span className="text-2xl">{quota.remaining > 0 ? '🎁' : '🚫'}</span>
-                                <span className={`text-sm font-medium ${quota.remaining > 0 ? 'text-caution-amber' : 'text-objection-red'}`}>
-                                    {quota.remaining > 0 ? 'Try 1 verdict free!' : 'Sign in for more'}
+                            <div className="flex items-center justify-center gap-2 p-3 rounded-xl border bg-electric-violet/10 border-electric-violet/20">
+                                <span className="text-2xl">⚖️</span>
+                                <span className="text-sm font-medium text-electric-violet">
+                                    Sign in to get 5 verdicts/day
                                 </span>
                             </div>
-                            <div className="flex gap-2">
-                                <Link href="/submit" className="flex-1 py-2.5 bg-charcoal-layer text-starlight-white text-center rounded-xl text-sm font-medium border border-white/10" onClick={() => setIsMenuOpen(false)}>
-                                    Try as Guest
-                                </Link>
-                                <Link href="/login" className="flex-1 py-2.5 bg-gradient-to-r from-electric-violet to-cyber-blue text-white text-center rounded-xl text-sm font-bold" onClick={() => setIsMenuOpen(false)}>
-                                    Sign In
-                                </Link>
-                            </div>
+                            <Link
+                                href="/login"
+                                className="block w-full py-2.5 bg-gradient-to-r from-electric-violet to-cyber-blue text-white text-center rounded-xl text-sm font-bold"
+                                onClick={() => setIsMenuOpen(false)}
+                            >
+                                Sign In
+                            </Link>
                         </div>
                     )}
                 </div>

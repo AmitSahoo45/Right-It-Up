@@ -59,7 +59,7 @@ export function CaseBlockedView({ caseData, isPartyA, isPartyB, user }: CaseBloc
             {iAmBlocking && !user ? (
                 <>
                     <p className="text-steel-grey mb-8">
-                        You need to sign in to unlock this verdict. As a guest, you&apos;ve already used your free verdict.
+                        You need to sign in to unlock this verdict.
                     </p>
                     <Link
                         href="/login"
@@ -70,9 +70,6 @@ export function CaseBlockedView({ caseData, isPartyA, isPartyB, user }: CaseBloc
                 </>
             ) : isPartyA && partyANeedsSignIn ? (
                 <>
-                    <p className="text-steel-grey mb-4">
-                        You created this case as a guest and have used your free verdict.
-                    </p>
                     <p className="text-steel-grey mb-8">
                         Sign in to unlock this verdict and get 5 verdicts per day!
                     </p>
@@ -93,7 +90,7 @@ export function CaseBlockedView({ caseData, isPartyA, isPartyB, user }: CaseBloc
                             Let them know they need to sign in at{' '}
                             <span className="text-electric-violet font-mono">
                                 {process.env.NEXT_PUBLIC_ENVIRONMENT === 'development' ?
-                                 'http://localhost:3000' : 'https://rightitup.vercel.app'}/login</span>
+                                    'http://localhost:3000' : 'https://rightitup.vercel.app'}/login</span>
                         </p>
                     </div>
                 </>

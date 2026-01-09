@@ -83,11 +83,11 @@ export async function POST(request: Request): Promise<NextResponse<CreateCaseRes
         if (!quota.can_use) {
             const message = user
                 ? 'You have used all 5 verdicts for today. Try again tomorrow!'
-                : 'You have used your free verdict. Sign in to get 5 verdicts per day!';
+                : 'Please sign in to submit a case.';
 
             return NextResponse.json(
                 { success: false, error: message },
-                { status: 429 }
+                { status: user ? 429 : 401 }
             );
         }
 

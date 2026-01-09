@@ -28,12 +28,6 @@ export default async function LoginPage({ searchParams, }: { searchParams: Promi
             </div>
           )}
 
-          <div className="mb-6 p-4 bg-blue-500/20 border border-blue-500/50 rounded-lg">
-            <p className="text-blue-200 text-sm text-center">
-              🎁 <strong>Try free:</strong> Submit 1 dispute without signing up!
-            </p>
-          </div>
-
           <form action={signInWithGoogle}>
             <button
               type="submit"
@@ -65,15 +59,6 @@ export default async function LoginPage({ searchParams, }: { searchParams: Promi
             <p className="text-gray-400 text-sm">
               Sign in to get <strong className="text-white">5 verdicts/day</strong>
             </p>
-          </div>
-
-          <div className="mt-6 pt-6 border-t border-white/20">
-            <a
-              href="/"
-              className="block w-full text-center text-gray-300 hover:text-white py-2 transition-colors"
-            >
-              Continue as Guest →
-            </a>
           </div>
         </div>
       </div>

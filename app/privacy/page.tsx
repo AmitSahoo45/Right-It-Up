@@ -142,11 +142,10 @@ export default function PrivacyPolicyPage() {
                         </section>
 
                         <section>
-                            <h2 className="text-2xl font-bold text-starlight-white mb-4">10. Guest Users</h2>
+                            <h2 className="text-2xl font-bold text-starlight-white mb-4">10. Rate Limiting</h2>
                             <p className="text-steel-grey leading-relaxed">
-                                If you use the Service without creating an account, we identify you by IP address for rate limiting purposes.
-                                Your submitted content is still stored and processed, but is not linked to a persistent account.
-                                Guest usage data may be retained for fraud prevention.
+                                We collect IP addresses for rate limiting and fraud prevention purposes.
+                                This data is used to ensure fair usage of the platform and prevent abuse.
                             </p>
                         </section>
 

@@ -45,29 +45,38 @@ export default function SubmitPage() {
                         </p>
                     </div>
 
-                    {/* Quota Warning */}
-                    {!quota.can_use ? (
+                    {/* Must be signed in */}
+                    {!user ? (
+                        <div className="bg-electric-violet/10 border border-electric-violet/30 rounded-2xl p-6 mb-8">
+                            <div className="flex items-start gap-4">
+                                <div className="text-3xl">🔐</div>
+                                <div>
+                                    <h3 className="text-electric-violet font-bold text-lg mb-2">
+                                        Sign In Required
+                                    </h3>
+                                    <p className="text-steel-grey mb-4">
+                                        Please sign in to submit a case. You&apos;ll get 5 verdicts per day!
+                                    </p>
+                                    <Link
+                                        href="/login"
+                                        className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-electric-violet to-cyber-blue text-white font-bold rounded-xl hover:shadow-electric-glow transition-all"
+                                    >
+                                        Sign In to Continue
+                                    </Link>
+                                </div>
+                            </div>
+                        </div>
+                    ) : !quota.can_use ? (
                         <div className="bg-objection-red/10 border border-objection-red/30 rounded-2xl p-6 mb-8">
                             <div className="flex items-start gap-4">
                                 <div className="text-3xl">🚫</div>
                                 <div>
                                     <h3 className="text-objection-red font-bold text-lg mb-2">
-                                        {user ? 'Daily Limit Reached' : 'Free Verdict Used'}
+                                        Daily Limit Reached
                                     </h3>
                                     <p className="text-steel-grey mb-4">
-                                        {user
-                                            ? "You've used all 5 verdicts for today. Your limit resets in 24 hours."
-                                            : "You've used your free verdict. Sign in to get 5 verdicts per day!"
-                                        }
+                                        You&apos;ve used all 5 verdicts for today. Your limit resets in 24 hours.
                                     </p>
-                                    {!user && (
-                                        <Link
-                                            href="/login"
-                                            className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-electric-violet to-cyber-blue text-white font-bold rounded-xl hover:shadow-electric-glow transition-all"
-                                        >
-                                            Sign In for More Verdicts
-                                        </Link>
-                                    )}
                                 </div>
                             </div>
                         </div>
@@ -77,11 +86,7 @@ export default function SubmitPage() {
                             <div className="flex items-center justify-center gap-2 mb-8">
                                 <div className={`w-2 h-2 rounded-full ${quota.remaining > 2 ? 'bg-verdict-green' : quota.remaining > 0 ? 'bg-caution-amber' : 'bg-objection-red'} animate-pulse`}></div>
                                 <span className="text-steel-grey text-sm">
-                                    {user ? (
-                                        <>{quota.remaining} verdict{quota.remaining !== 1 ? 's' : ''} remaining today</>
-                                    ) : (
-                                        <>1 free verdict available</>
-                                    )}
+                                    {quota.remaining} verdict{quota.remaining !== 1 ? 's' : ''} remaining today
                                 </span>
                             </div>
 
