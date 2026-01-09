@@ -116,7 +116,7 @@ export async function POST(
                 { status: 400 }
             );
         }
-        
+
         const honeypotData = extractHoneypotData(body as unknown as Record<string, unknown>);
         const honeypotResult = validateHoneypot(honeypotData);
         if (honeypotResult.isBot) {
@@ -163,6 +163,16 @@ export async function POST(
         const evidenceText = sanitizeEvidenceText(body.party_b_evidence_text || []);
         const evidenceImages = sanitizeUrls(body.party_b_evidence_images || []).slice(0, 5);
 
+        // Server-side validation: minimum 3 evidence images required
+        const MIN_EVIDENCE_IMAGES = 3;
+        if (evidenceImages.length < MIN_EVIDENCE_IMAGES) {
+            return NextResponse.json(
+                { success: false, error: `At least ${MIN_EVIDENCE_IMAGES} evidence screenshots are required` },
+                { status: 400 }
+            );
+        }
+
+
         // Use the secure RPC to submit response (pass code, not caseId)
         const submitResult = await submitResponse(
             caseData.id,
@@ -189,7 +199,7 @@ export async function POST(
         if (!updatedCaseResult) {
             throw new Error('Case disappeared after response submission');
         }
-        
+
         const updatedCase = updatedCaseResult.case;
 
         const quotaCheck = await canBothPartiesAffordVerdict(updatedCase);
@@ -274,31 +284,31 @@ export async function POST(
             );
 
             try {
-                const partyAHadEvidence = (updatedCase.party_a_evidence_text?.length || 0) > 0 || 
-                                          (updatedCase.party_a_evidence_images?.length || 0) > 0;
-                const partyBHadEvidence = (updatedCase.party_b_evidence_text?.length || 0) > 0 || 
-                                          (updatedCase.party_b_evidence_images?.length || 0) > 0;
-                
+                const partyAHadEvidence = (updatedCase.party_a_evidence_text?.length || 0) > 0 ||
+                    (updatedCase.party_a_evidence_images?.length || 0) > 0;
+                const partyBHadEvidence = (updatedCase.party_b_evidence_text?.length || 0) > 0 ||
+                    (updatedCase.party_b_evidence_images?.length || 0) > 0;
+
                 await updateBothPartiesStats({
                     caseId: caseData.id,
                     caseCode: code,
                     category: updatedCase.category,
                     tone: updatedCase.tone,
                     winner: aiResponse.verdict.winner,
-                    
+
                     partyAUserId: updatedCase.party_a_id,
                     partyAName: updatedCase.party_a_name,
                     partyAScore: aiResponse.analysis.partyA.score,
                     partyAHadEvidence,
                     partyAFallacies: aiResponse.analysis.partyA.fallacies?.length || 0,
-                    
+
                     partyBUserId: user?.id || null,
                     partyBName: updatedCase.party_b_name!,
                     partyBScore: aiResponse.analysis.partyB.score,
                     partyBHadEvidence,
                     partyBFallacies: aiResponse.analysis.partyB.fallacies?.length || 0,
                 });
-                
+
                 console.log(`[Stats] Updated stats for case ${code}`);
             } catch (statsError) {
                 console.error('Failed to update user stats:', statsError);

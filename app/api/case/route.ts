@@ -94,6 +94,16 @@ export async function POST(request: Request): Promise<NextResponse<CreateCaseRes
         const evidenceText = sanitizeEvidenceText(body.party_a_evidence_text || []);
         const evidenceImages = sanitizeUrls(body.party_a_evidence_images || []).slice(0, 5);
 
+        // Server-side validation: minimum 3 evidence images required
+        const MIN_EVIDENCE_IMAGES = 3;
+        if (evidenceImages.length < MIN_EVIDENCE_IMAGES) {
+            return NextResponse.json(
+                { success: false, error: `At least ${MIN_EVIDENCE_IMAGES} evidence screenshots are required` },
+                { status: 400 }
+            );
+        }
+
+
         const validCategories = ['general', 'relationship', 'roommate', 'sports', 'tech'];
         const validTones = ['neutral', 'genz', 'professional', 'savage', 'wholesome'];
 
