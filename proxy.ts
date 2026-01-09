@@ -8,18 +8,12 @@ const redis = new Redis({
     token: process.env.UPSTASH_REDIS_REST_TOKEN!,
 });
 
+// General API rate limit for routes WITHOUT their own rate limiting
 const apiLimiter = new Ratelimit({
     redis,
-    limiter: Ratelimit.slidingWindow(60, '1 m'), // 60 per minute
+    limiter: Ratelimit.slidingWindow(60, '1 m'),
     analytics: true,
     prefix: 'ratelimit:api',
-});
-
-const caseLimiter = new Ratelimit({
-    redis,
-    limiter: Ratelimit.slidingWindow(10, '1 m'), // 10 per minute
-    analytics: true,
-    prefix: 'ratelimit:case-mw',
 });
 
 function getClientIp(request: NextRequest): string {
@@ -42,27 +36,28 @@ function getClientIp(request: NextRequest): string {
     return '0.0.0.0';
 }
 
+// Routes that have their own dedicated rate limiting in API handlers
+// These should NOT be rate limited at middleware level to avoid double-counting
+const ROUTES_WITH_OWN_RATE_LIMITING = [
+    '/api/case',           // Uses rateLimitCaseCreation (5/min)
+    '/respond',            // Uses rateLimitVerdict (3/min)
+];
+
+function hasOwnRateLimiting(pathname: string): boolean {
+    return ROUTES_WITH_OWN_RATE_LIMITING.some(route => 
+        pathname === route || pathname.includes(route)
+    );
+}
+
 export const proxy = async (request: NextRequest) => {
     const { pathname } = request.nextUrl;
     const clientIp = getClientIp(request);
 
     if (pathname.startsWith('/api/')) {
-        try {
-            if (pathname === '/api/case' || pathname.includes('/respond')) {
-                const { success, reset } = await caseLimiter.limit(clientIp);
-                if (!success) {
-                    return NextResponse.json(
-                        { success: false, error: 'Too many requests. Please slow down.' },
-                        {
-                            status: 429,
-                            headers: {
-                                'Retry-After': Math.ceil((reset - Date.now()) / 1000).toString(),
-                            }
-                        }
-                    );
-                }
-            }
-            else {
+        // Skip middleware rate limiting for routes that have their own limiters
+        // This prevents double-counting against users
+        if (!hasOwnRateLimiting(pathname)) {
+            try {
                 const { success, reset } = await apiLimiter.limit(clientIp);
                 if (!success) {
                     return NextResponse.json(
@@ -75,9 +70,9 @@ export const proxy = async (request: NextRequest) => {
                         }
                     );
                 }
+            } catch (error) {
+                console.error('Rate limit check failed:', error);
             }
-        } catch (error) {
-            console.error('Rate limit check failed:', error);
         }
     }
 
