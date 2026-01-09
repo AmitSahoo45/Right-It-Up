@@ -3,10 +3,13 @@ import type { HoneypotData, HoneypotValidationResult } from '@/types';
 
 // Minimum time (ms) a human would take to fill a form
 // Forms with multiple fields + evidence uploads should take at least 20 minutes
-const MIN_FORM_TIME_MS = 20 * 60 * 1000;
+const MIN_FORM_TIME_MS = 15 * 1000; // Note to myself 
+// Bots typically submit in milliseconds, humans take at least 15 seconds
+// < 15 seconds is considered too fast and therefore suspicious or a bot. 
 
-// Maximum reasonable time (30 minutes) - forms older than this are suspicious
-const MAX_FORM_TIME_MS = 30 * 60 * 1000;
+// Maximum reasonable time (24 hours) - forms older than this are suspicious
+// incase the tab stays open for a long time
+const MAX_FORM_TIME_MS = 24 * 60 * 60 * 1000;
 
 
 
