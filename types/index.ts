@@ -430,3 +430,15 @@ export interface HoneypotValidationResult {
         timingValid: boolean;
     };
 }
+
+export interface UseVerdictPollingOptions {
+    code: string;
+    enabled: boolean;
+    interval?: number;
+    maxAttempts?: number;
+}
+
+export interface VerdictStatus {
+    status: 'pending_response' | 'analyzing' | 'complete' | 'expired' | 'blocked_quota';
+    hasVerdict: boolean;
+}
