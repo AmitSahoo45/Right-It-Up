@@ -106,7 +106,7 @@ export default function Home() {
                   </div>
                   <div className="flex justify-between">
                     <span className="text-steel-grey">Category:</span>
-                    <span className="text-caution-amber">💕 Relationship</span>
+                    <span className="text-caution-amber">⚖️ General</span>
                   </div>
                 </div>
 
