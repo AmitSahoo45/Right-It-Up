@@ -55,6 +55,7 @@ export function CaseResponseForm({ caseCode, caseData }: CaseResponseFormProps) 
         setIsSubmitting(true);
 
         try {
+            toast.loading('Submitting your response...', { id: 'submit-response', duration: 5000 });
             const response = await fetch(`/api/case/${caseCode}/respond`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -78,13 +79,13 @@ export function CaseResponseForm({ caseCode, caseData }: CaseResponseFormProps) 
             }
 
             await refreshQuota();
+            toast.success('Response submitted! Generating verdict...');
 
             if (data.verdict_url)
                 router.push(data.verdict_url);
             else
                 router.push(`/verdict/${caseCode}`);
 
-            toast.success('Response submitted! Generating verdict...');
         } catch (err) {
             toast.error(err instanceof Error ? err.message : 'Something went wrong');
             setError('Something went wrong. Please try again.');

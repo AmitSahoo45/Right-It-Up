@@ -40,8 +40,6 @@ export async function POST(
 
     const code = sanitizeCaseCode(rawCode);
 
-    console.log(`Responding to case code: ${safeLogExcerpt(code || rawCode)}`);
-
     if (!code) {
         return NextResponse.json(
             { success: false, error: 'Invalid case code format' },
@@ -244,7 +242,6 @@ export async function POST(
             const partyAImages = updatedCase.party_a_evidence_images || [];
             const partyBImages = updatedCase.party_b_evidence_images || [];
 
-            console.log(`[OCR-Enhanced] Generating verdict with ${partyAImages.length} Party A images and ${partyBImages.length} Party B images`);
 
             const aiResponse: AIVerdictResponse = await generateVerdict({
                 dispute,
@@ -317,7 +314,6 @@ export async function POST(
                     partyBFallacies: aiResponse.analysis.partyB.fallacies?.length || 0,
                 });
 
-                console.log(`[Stats] Updated stats for case ${code}`);
             } catch (statsError) {
                 console.error('Failed to update user stats:', statsError);
             }

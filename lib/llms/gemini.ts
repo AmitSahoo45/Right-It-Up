@@ -299,7 +299,6 @@ export const generateVerdictFromGemini = async (
             let contents: string | Array<{ text?: string; inlineData?: { mimeType: string; data: string } }>;
 
             if (hasImages) {
-                console.log(`[OCR] Processing ${partyAImages.length} Party A images and ${partyBImages.length} Party B images with enhanced OCR`);
                 contents = await buildMultimodalContent(dispute, systemPrompt, partyAImages, partyBImages);
             } else {
                 contents = buildTextOnlyPrompt(dispute, systemPrompt);

@@ -37,7 +37,6 @@ export default function ProfilePage() {
             if (data.success) {
                 setProfile(data.profile);
 
-                console.log("Profile data: \n ================================================== \n", data.profile);
             } else {
                 setError(data.error || 'Failed to load profile');
             }

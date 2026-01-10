@@ -213,11 +213,8 @@ export async function updateBothPartiesStats(params: {
 }): Promise<void> {
     // Update Party A stats if they're a registered user
 
-    console.log('Updating stats for both parties with params: ========= \n', params, "\n========");
-    console.log('======== \n', params.winner, "\n========");
     const dtOutcomeA = determineOutcome(params.winner, 'party_a');
     const dtOutcomeB = determineOutcome(params.winner, 'party_b');
-    console.log('Determined Outcomes:', { partyA: dtOutcomeA, partyB: dtOutcomeB });
 
     if (params.partyAUserId) {
         await updateUserStatsAfterVerdict({

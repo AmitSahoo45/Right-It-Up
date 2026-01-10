@@ -1,7 +1,7 @@
 import { createClient } from '@/utils/supabase/server';
 import { getCaseWithVerdict } from '@/lib/db';
 import { notFound, redirect } from 'next/navigation';
-import { Navbar } from '@/components/Navbar';
+
 import { VerdictReceipt } from '@/components/VerdictReceipt';
 import { VerdictRuling } from '@/components/VerdictRuling';
 

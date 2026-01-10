@@ -9,7 +9,6 @@ export function ClientNavbar() {
     const { user, quota, isLoading } = useAuth();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const userName: string = user?.user_metadata?.full_name?.split(' ')[0] || user?.email?.split('@')[0] || 'User';
-    console.log("Quota - ", quota)
     if (isLoading) {
         return (
             <nav className="fixed top-4 left-1/2 -translate-x-1/2 w-[95%] md:w-[85%] lg:w-[80%] z-50 rounded-2xl border border-white/10 bg-midnight-void/80 backdrop-blur-xl shadow-2xl">
