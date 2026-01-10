@@ -39,6 +39,9 @@ export async function POST(
     const { code: rawCode } = await params;
 
     const code = sanitizeCaseCode(rawCode);
+
+    console.log(`Responding to case code: ${safeLogExcerpt(code || rawCode)}`);
+
     if (!code) {
         return NextResponse.json(
             { success: false, error: 'Invalid case code format' },

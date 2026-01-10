@@ -50,12 +50,15 @@ function getFallacyName(fallacy: FallacyEntry): string {
 function EvidenceQualityBadge({ quality }: { quality?: EvidenceQuality }) {
     if (!quality) return null;
 
-    const config = {
+    const configMap = {
         strong: { color: COLORS.verdictGreen, bg: 'rgba(16, 185, 129, 0.1)', label: '💪 Strong Evidence' },
         moderate: { color: COLORS.cyberBlue, bg: 'rgba(59, 130, 246, 0.1)', label: '📊 Moderate Evidence' },
         weak: { color: COLORS.cautionAmber, bg: 'rgba(245, 158, 11, 0.1)', label: '⚠️ Weak Evidence' },
         none: { color: COLORS.objectionRed, bg: 'rgba(239, 68, 68, 0.1)', label: '❌ No Evidence' },
-    }[quality];
+    };
+
+    const config = configMap[quality];
+    if (!config) return null;
 
     return (
         <span style={{

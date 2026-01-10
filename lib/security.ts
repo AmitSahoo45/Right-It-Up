@@ -76,9 +76,8 @@ export function sanitizeCaseCode(code: string): string | null {
     const sanitized = code.trim().toUpperCase();
 
     // Case code format: WR-YYYY-XXXX
-    if (!/^WR-\d{4}-\d{4}$/.test(sanitized)) {
+    if (!/^WR-\d{4}-[A-Z0-9]{8}$/.test(sanitized)) 
         return null;
-    }
 
     return sanitized;
 }

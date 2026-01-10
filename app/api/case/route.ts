@@ -19,6 +19,8 @@ import {
 import { rateLimitCaseCreation, getRateLimitHeaders } from '@/lib/ratelimit';
 import type { CreateCaseRequest, CreateCaseResponse } from '@/types';
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(request: Request): Promise<NextResponse<CreateCaseResponse>> {
     const clientIp = getClientIp(request);
     
