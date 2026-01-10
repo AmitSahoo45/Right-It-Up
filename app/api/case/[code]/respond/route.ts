@@ -27,14 +27,15 @@ import {
     logBotDetection,
     createFakeSuccessResponse
 } from '@/lib/honeypot/honeypot';
-import { rateLimitVerdict, getRateLimitHeaders, getClientIpFromRequest } from '@/lib/ratelimit';
+import { rateLimitVerdict, getRateLimitHeaders } from '@/lib/ratelimit';
 import type { RespondCaseRequest, RespondCaseResponse, Dispute, AIVerdictResponse } from '@/types';
 
 export async function POST(
     request: Request,
     { params }: { params: Promise<{ code: string }> }
 ): Promise<NextResponse<RespondCaseResponse>> {
-    const clientIp = getClientIpFromRequest(request);
+    const clientIp = getClientIp(request);
+    
     const { code: rawCode } = await params;
 
     const code = sanitizeCaseCode(rawCode);
@@ -275,7 +276,7 @@ export async function POST(
             await recordUsage(
                 caseData.id,
                 updatedCase.party_a_id,
-                updatedCase.party_a_ip || ''
+                updatedCase.party_a_ip ?? null
             );
             await recordUsage(
                 caseData.id,

@@ -36,7 +36,7 @@ export const createCase = async (
     clientIp: string
 ): Promise<{ code: string; id: string }> => {
     const supabase = await createClient();
-    
+
     // Use the secure create_case RPC
     const { data: result, error } = await supabase.rpc('create_case', {
         p_party_a_name: data.party_a_name,
@@ -49,14 +49,14 @@ export const createCase = async (
     });
 
     if (error) throw new Error(`Failed to create case: ${error.message}`);
-    
+
     if (!result || !result.success) {
         throw new Error('Failed to create case: RPC returned unsuccessful result');
     }
-    
-    return { 
-        code: result.code, 
-        id: result.case_id 
+
+    return {
+        code: result.code,
+        id: result.case_id
     };
 }
 
@@ -100,9 +100,9 @@ export const getCaseWithVerdict = async (code: string): Promise<{ case: Case; ve
     }
 
     const row = data[0];
-    return { 
-        case: row.case_data as Case, 
-        verdict: row.verdict_data as Verdict | null 
+    return {
+        case: row.case_data as Case,
+        verdict: row.verdict_data as Verdict | null
     };
 }
 
@@ -134,9 +134,9 @@ export const submitResponse = async (
     }
 
     if (!result || !result.success) {
-        return { 
-            success: false, 
-            error: result?.error || 'Failed to submit response' 
+        return {
+            success: false,
+            error: result?.error || 'Failed to submit response'
         };
     }
 
@@ -173,12 +173,12 @@ export async function updateCaseStatus(caseId: string, status: CaseStatus): Prom
         // Fallback to direct update if RPC doesn't exist
         const { error: updateError } = await supabase
             .from('cases')
-            .update({ 
+            .update({
                 status,
                 ...(status === 'complete' ? { completed_at: new Date().toISOString() } : {})
             })
             .eq('id', caseId);
-        
+
         if (updateError) {
             throw new Error(`Failed to update case status: ${updateError.message}`);
         }
@@ -251,18 +251,17 @@ export const checkUserQuota = async (userId: string): Promise<QuotaCheck> => {
     return data[0] || { can_use: false, remaining: 0, used: 5 };
 }
 
-export const checkGuestQuota = async (ip: string): Promise<QuotaCheck> => {
+export const checkGuestQuota = async (ip: string | null): Promise<QuotaCheck> => {
     const supabase = await createClient();
 
-    const { data, error } = await supabase
-        .rpc('check_guest_quota', { p_ip: ip });
+    const { data, error } = await supabase.rpc('check_guest_quota', { p_ip: ip });
 
     if (error) throw new Error(`Failed to check guest quota: ${error.message}`);
 
     return data[0] || { can_use: false, remaining: 0, used: 1 };
 }
 
-export const checkQuota = async (userId: string | null, ip: string): Promise<QuotaCheck> => {
+export const checkQuota = async (userId: string | null, ip: string | null): Promise<QuotaCheck> => {
     if (userId) {
         return checkUserQuota(userId);
     }
@@ -273,7 +272,7 @@ export const checkQuota = async (userId: string | null, ip: string): Promise<Quo
 export const recordUsage = async (
     caseId: string,
     userId: string | null,
-    ip: string
+    ip: string | null
 ): Promise<void> => {
     const supabase = await createClient();
 
@@ -295,7 +294,7 @@ export const canBothPartiesAffordVerdict = async (caseData: Case): Promise<{
     // Check Party A
     const partyAQuota = await checkQuota(
         caseData.party_a_id,
-        caseData.party_a_ip || ''
+        caseData.party_a_ip ?? null
     );
 
     if (!partyAQuota.can_use) {
@@ -311,7 +310,7 @@ export const canBothPartiesAffordVerdict = async (caseData: Case): Promise<{
     // Checking Party B
     const partyBQuota = await checkQuota(
         caseData.party_b_id,
-        caseData.party_b_ip || ''
+        caseData.party_b_ip ?? null
     );
 
     if (!partyBQuota.can_use) {

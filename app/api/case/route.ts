@@ -16,12 +16,12 @@ import {
     logBotDetection,
     createFakeSuccessResponse
 } from '@/lib/honeypot/honeypot';
-import { rateLimitCaseCreation, getRateLimitHeaders, getClientIpFromRequest } from '@/lib/ratelimit';
+import { rateLimitCaseCreation, getRateLimitHeaders } from '@/lib/ratelimit';
 import type { CreateCaseRequest, CreateCaseResponse } from '@/types';
 
 export async function POST(request: Request): Promise<NextResponse<CreateCaseResponse>> {
-    const clientIp = getClientIpFromRequest(request);
-
+    const clientIp = getClientIp(request);
+    
     const rateLimit = await rateLimitCaseCreation(clientIp);
     if (!rateLimit.success) {
         return NextResponse.json(

@@ -1,6 +1,8 @@
 import { Redis } from '@upstash/redis';
 import { Ratelimit } from '@upstash/ratelimit';
 
+export { getClientIp } from './utils';
+
 const redis = new Redis({
     url: process.env.UPSTASH_REDIS_REST_URL!,
     token: process.env.UPSTASH_REDIS_REST_TOKEN!,
@@ -85,23 +87,6 @@ export function getRateLimitHeaders(result: RateLimitResult): Record<string, str
             'Retry-After': Math.ceil((result.reset - Date.now()) / 1000).toString(),
         }),
     };
-}
-
-// Get client IP from request (uses verified headers)
-export function getClientIpFromRequest(request: Request): string {
-    // Vercel's verified IP (cannot be spoofed)
-    const vercelIp = request.headers.get('x-vercel-forwarded-for');
-    if (vercelIp) return vercelIp.split(',')[0].trim();
-
-    // Cloudflare
-    const cfIp = request.headers.get('cf-connecting-ip');
-    if (cfIp) return cfIp;
-
-    // Fallback
-    const forwarded = request.headers.get('x-forwarded-for');
-    if (forwarded) return forwarded.split(',')[0].trim();
-
-    return request.headers.get('x-real-ip') || '0.0.0.0';
 }
 
 // ============================================

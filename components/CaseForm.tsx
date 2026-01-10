@@ -31,7 +31,6 @@ export function CaseForm() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError(null);
-        setIsSubmitting(true);
 
         if (!formData.name.trim() || !isValidLength) {
             toast.error('Please fill in all required fields');
@@ -43,6 +42,7 @@ export function CaseForm() {
             return;
         }
 
+        setIsSubmitting(true);
         try {
             const response = await fetch('/api/case', {
                 method: 'POST',
