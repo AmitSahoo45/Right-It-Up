@@ -58,25 +58,6 @@ export default function Home() {
             </Link>
           </div>
 
-          {/* Stats bar */}
-          <div className="flex flex-wrap justify-center gap-8 md:gap-16 mb-20 py-6 px-8 bg-charcoal-layer/50 rounded-3xl border border-white/5 backdrop-blur-sm">
-            <div className="text-center">
-              <div className="text-3xl md:text-4xl font-black text-electric-violet">50K+</div>
-              <div className="text-steel-grey text-sm">Cases Settled</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl md:text-4xl font-black text-verdict-green">89%</div>
-              <div className="text-steel-grey text-sm">Accept the Verdict</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl md:text-4xl font-black text-cyber-blue">&lt;30s</div>
-              <div className="text-steel-grey text-sm">Average Verdict Time</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl md:text-4xl font-black text-caution-amber">4.9★</div>
-              <div className="text-steel-grey text-sm">User Rating</div>
-            </div>
-          </div>
         </section>
 
         {/* Receipt Preview Section */}
