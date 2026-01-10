@@ -1,0 +1,142 @@
+[
+  {
+    "tablename": "appeals",
+    "indexname": "appeals_case_id_appealing_party_key",
+    "indexdef": "CREATE UNIQUE INDEX appeals_case_id_appealing_party_key ON public.appeals USING btree (case_id, appealing_party)"
+  },
+  {
+    "tablename": "appeals",
+    "indexname": "appeals_pkey",
+    "indexdef": "CREATE UNIQUE INDEX appeals_pkey ON public.appeals USING btree (id)"
+  },
+  {
+    "tablename": "appeals",
+    "indexname": "idx_appeals_appellant_id",
+    "indexdef": "CREATE INDEX idx_appeals_appellant_id ON public.appeals USING btree (appellant_id)"
+  },
+  {
+    "tablename": "appeals",
+    "indexname": "idx_appeals_case_id",
+    "indexdef": "CREATE INDEX idx_appeals_case_id ON public.appeals USING btree (case_id)"
+  },
+  {
+    "tablename": "appeals",
+    "indexname": "idx_appeals_status",
+    "indexdef": "CREATE INDEX idx_appeals_status ON public.appeals USING btree (status)"
+  },
+  {
+    "tablename": "cases",
+    "indexname": "cases_code_key",
+    "indexdef": "CREATE UNIQUE INDEX cases_code_key ON public.cases USING btree (code)"
+  },
+  {
+    "tablename": "cases",
+    "indexname": "cases_pkey",
+    "indexdef": "CREATE UNIQUE INDEX cases_pkey ON public.cases USING btree (id)"
+  },
+  {
+    "tablename": "cases",
+    "indexname": "idx_cases_code",
+    "indexdef": "CREATE INDEX idx_cases_code ON public.cases USING btree (code)"
+  },
+  {
+    "tablename": "cases",
+    "indexname": "idx_cases_expires",
+    "indexdef": "CREATE INDEX idx_cases_expires ON public.cases USING btree (expires_at) WHERE ((status)::text = 'pending_response'::text)"
+  },
+  {
+    "tablename": "cases",
+    "indexname": "idx_cases_party_a",
+    "indexdef": "CREATE INDEX idx_cases_party_a ON public.cases USING btree (party_a_id)"
+  },
+  {
+    "tablename": "cases",
+    "indexname": "idx_cases_party_b",
+    "indexdef": "CREATE INDEX idx_cases_party_b ON public.cases USING btree (party_b_id)"
+  },
+  {
+    "tablename": "cases",
+    "indexname": "idx_cases_status",
+    "indexdef": "CREATE INDEX idx_cases_status ON public.cases USING btree (status)"
+  },
+  {
+    "tablename": "user_badges",
+    "indexname": "idx_user_badges_user",
+    "indexdef": "CREATE INDEX idx_user_badges_user ON public.user_badges USING btree (user_id)"
+  },
+  {
+    "tablename": "user_badges",
+    "indexname": "user_badges_pkey",
+    "indexdef": "CREATE UNIQUE INDEX user_badges_pkey ON public.user_badges USING btree (id)"
+  },
+  {
+    "tablename": "user_badges",
+    "indexname": "user_badges_user_id_badge_id_badge_tier_key",
+    "indexdef": "CREATE UNIQUE INDEX user_badges_user_id_badge_id_badge_tier_key ON public.user_badges USING btree (user_id, badge_id, badge_tier)"
+  },
+  {
+    "tablename": "user_case_history",
+    "indexname": "idx_user_case_history_created",
+    "indexdef": "CREATE INDEX idx_user_case_history_created ON public.user_case_history USING btree (user_id, created_at DESC)"
+  },
+  {
+    "tablename": "user_case_history",
+    "indexname": "idx_user_case_history_user",
+    "indexdef": "CREATE INDEX idx_user_case_history_user ON public.user_case_history USING btree (user_id)"
+  },
+  {
+    "tablename": "user_case_history",
+    "indexname": "user_case_history_pkey",
+    "indexdef": "CREATE UNIQUE INDEX user_case_history_pkey ON public.user_case_history USING btree (id)"
+  },
+  {
+    "tablename": "user_case_history",
+    "indexname": "user_case_history_user_id_case_id_key",
+    "indexdef": "CREATE UNIQUE INDEX user_case_history_user_id_case_id_key ON public.user_case_history USING btree (user_id, case_id)"
+  },
+  {
+    "tablename": "user_stats",
+    "indexname": "idx_user_stats_user",
+    "indexdef": "CREATE INDEX idx_user_stats_user ON public.user_stats USING btree (user_id)"
+  },
+  {
+    "tablename": "user_stats",
+    "indexname": "idx_user_stats_win_rate",
+    "indexdef": "CREATE INDEX idx_user_stats_win_rate ON public.user_stats USING btree (win_rate DESC)"
+  },
+  {
+    "tablename": "user_stats",
+    "indexname": "user_stats_pkey",
+    "indexdef": "CREATE UNIQUE INDEX user_stats_pkey ON public.user_stats USING btree (id)"
+  },
+  {
+    "tablename": "user_stats",
+    "indexname": "user_stats_user_id_key",
+    "indexdef": "CREATE UNIQUE INDEX user_stats_user_id_key ON public.user_stats USING btree (user_id)"
+  },
+  {
+    "tablename": "verdict_usage",
+    "indexname": "idx_usage_ip_date",
+    "indexdef": "CREATE INDEX idx_usage_ip_date ON public.verdict_usage USING btree (guest_ip, used_at)"
+  },
+  {
+    "tablename": "verdict_usage",
+    "indexname": "idx_usage_user_date",
+    "indexdef": "CREATE INDEX idx_usage_user_date ON public.verdict_usage USING btree (user_id, used_at)"
+  },
+  {
+    "tablename": "verdict_usage",
+    "indexname": "verdict_usage_pkey",
+    "indexdef": "CREATE UNIQUE INDEX verdict_usage_pkey ON public.verdict_usage USING btree (id)"
+  },
+  {
+    "tablename": "verdicts",
+    "indexname": "verdicts_case_id_key",
+    "indexdef": "CREATE UNIQUE INDEX verdicts_case_id_key ON public.verdicts USING btree (case_id)"
+  },
+  {
+    "tablename": "verdicts",
+    "indexname": "verdicts_pkey",
+    "indexdef": "CREATE UNIQUE INDEX verdicts_pkey ON public.verdicts USING btree (id)"
+  }
+]

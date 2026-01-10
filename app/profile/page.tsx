@@ -161,14 +161,17 @@ export default function ProfilePage() {
                             <div className="space-y-8">
                                 <ProfileStats stats={profile.stats!} />
                                 <ProfileCategoryBreakdown stats={profile.stats!} />
-                                {profile.badges.length > 0 && (
+                                {/* {profile.badges.length > 0 && (
                                     <div>
                                         <h2 className="text-xl font-bold text-starlight-white mb-4 flex items-center gap-2">
                                             <span>🏆</span> Recent Badges
                                         </h2>
                                         <ProfileBadges badges={profile.badges.slice(0, 6)} />
                                     </div>
-                                )}
+                                )} */}
+                                {/* Major bug here. Updates aren't successful */}
+                                {/* Despite 3 losses data is getting stored as wins */}
+                                {/* TODO */}
                             </div>
                         )}
 

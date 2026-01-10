@@ -18,7 +18,6 @@ export function ProfileCategoryBreakdown({ stats }: ProfileCategoryBreakdownProp
     if (sortedCategories.length === 0) {
         return null;
     }
-
     return (
         <div className="bg-charcoal-layer/30 border border-white/5 rounded-2xl p-6">
             <h2 className="text-xl font-bold text-starlight-white mb-6 flex items-center gap-2">

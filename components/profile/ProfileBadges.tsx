@@ -9,6 +9,8 @@ interface ProfileBadgesProps {
 }
 
 export function ProfileBadges({ badges, showAll = false }: ProfileBadgesProps) {
+    console.log("Rendering ProfileBadges with badges: \n", badges, " \n\nshowAll: \n", showAll);
+
     if (badges.length === 0 && showAll) {
         return (
             <div className="text-center py-12">

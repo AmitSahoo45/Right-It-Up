@@ -1,758 +1,866 @@
 [
-    {
-        "table_name": "appeals",
-        "column_name": "id",
-        "data_type": "uuid",
-        "is_nullable": "NO",
-        "column_default": "gen_random_uuid()"
-    },
-    {
-        "table_name": "appeals",
-        "column_name": "case_id",
-        "data_type": "uuid",
-        "is_nullable": "NO",
-        "column_default": null
-    },
-    {
-        "table_name": "appeals",
-        "column_name": "appealing_party",
-        "data_type": "character varying",
-        "is_nullable": "NO",
-        "column_default": null
-    },
-    {
-        "table_name": "appeals",
-        "column_name": "appellant_id",
-        "data_type": "uuid",
-        "is_nullable": "YES",
-        "column_default": null
-    },
-    {
-        "table_name": "appeals",
-        "column_name": "reason",
-        "data_type": "text",
-        "is_nullable": "NO",
-        "column_default": null
-    },
-    {
-        "table_name": "appeals",
-        "column_name": "new_evidence_text",
-        "data_type": "text",
-        "is_nullable": "YES",
-        "column_default": null
-    },
-    {
-        "table_name": "appeals",
-        "column_name": "new_evidence_images",
-        "data_type": "ARRAY",
-        "is_nullable": "YES",
-        "column_default": "'{}'::text[]"
-    },
-    {
-        "table_name": "appeals",
-        "column_name": "original_verdict",
-        "data_type": "jsonb",
-        "is_nullable": "NO",
-        "column_default": null
-    },
-    {
-        "table_name": "appeals",
-        "column_name": "original_winner",
-        "data_type": "character varying",
-        "is_nullable": "NO",
-        "column_default": null
-    },
-    {
-        "table_name": "appeals",
-        "column_name": "original_party_a_score",
-        "data_type": "integer",
-        "is_nullable": "NO",
-        "column_default": null
-    },
-    {
-        "table_name": "appeals",
-        "column_name": "original_party_b_score",
-        "data_type": "integer",
-        "is_nullable": "NO",
-        "column_default": null
-    },
-    {
-        "table_name": "appeals",
-        "column_name": "appeal_verdict",
-        "data_type": "jsonb",
-        "is_nullable": "YES",
-        "column_default": null
-    },
-    {
-        "table_name": "appeals",
-        "column_name": "new_winner",
-        "data_type": "character varying",
-        "is_nullable": "YES",
-        "column_default": null
-    },
-    {
-        "table_name": "appeals",
-        "column_name": "new_party_a_score",
-        "data_type": "integer",
-        "is_nullable": "YES",
-        "column_default": null
-    },
-    {
-        "table_name": "appeals",
-        "column_name": "new_party_b_score",
-        "data_type": "integer",
-        "is_nullable": "YES",
-        "column_default": null
-    },
-    {
-        "table_name": "appeals",
-        "column_name": "verdict_changed",
-        "data_type": "boolean",
-        "is_nullable": "YES",
-        "column_default": "false"
-    },
-    {
-        "table_name": "appeals",
-        "column_name": "change_summary",
-        "data_type": "text",
-        "is_nullable": "YES",
-        "column_default": null
-    },
-    {
-        "table_name": "appeals",
-        "column_name": "status",
-        "data_type": "character varying",
-        "is_nullable": "YES",
-        "column_default": "'pending'::character varying"
-    },
-    {
-        "table_name": "appeals",
-        "column_name": "created_at",
-        "data_type": "timestamp with time zone",
-        "is_nullable": "YES",
-        "column_default": "now()"
-    },
-    {
-        "table_name": "appeals",
-        "column_name": "processed_at",
-        "data_type": "timestamp with time zone",
-        "is_nullable": "YES",
-        "column_default": null
-    },
-    {
-        "table_name": "cases",
-        "column_name": "id",
-        "data_type": "uuid",
-        "is_nullable": "NO",
-        "column_default": "gen_random_uuid()"
-    },
-    {
-        "table_name": "cases",
-        "column_name": "code",
-        "data_type": "character varying",
-        "is_nullable": "NO",
-        "column_default": null
-    },
-    {
-        "table_name": "cases",
-        "column_name": "category",
-        "data_type": "character varying",
-        "is_nullable": "YES",
-        "column_default": "'general'::character varying"
-    },
-    {
-        "table_name": "cases",
-        "column_name": "tone",
-        "data_type": "character varying",
-        "is_nullable": "YES",
-        "column_default": "'neutral'::character varying"
-    },
-    {
-        "table_name": "cases",
-        "column_name": "status",
-        "data_type": "character varying",
-        "is_nullable": "YES",
-        "column_default": "'pending_response'::character varying"
-    },
-    {
-        "table_name": "cases",
-        "column_name": "party_a_id",
-        "data_type": "uuid",
-        "is_nullable": "YES",
-        "column_default": null
-    },
-    {
-        "table_name": "cases",
-        "column_name": "party_a_name",
-        "data_type": "character varying",
-        "is_nullable": "NO",
-        "column_default": null
-    },
-    {
-        "table_name": "cases",
-        "column_name": "party_a_argument",
-        "data_type": "text",
-        "is_nullable": "NO",
-        "column_default": null
-    },
-    {
-        "table_name": "cases",
-        "column_name": "party_a_evidence_text",
-        "data_type": "ARRAY",
-        "is_nullable": "YES",
-        "column_default": "'{}'::text[]"
-    },
-    {
-        "table_name": "cases",
-        "column_name": "party_a_evidence_images",
-        "data_type": "ARRAY",
-        "is_nullable": "YES",
-        "column_default": "'{}'::text[]"
-    },
-    {
-        "table_name": "cases",
-        "column_name": "party_a_ip",
-        "data_type": "character varying",
-        "is_nullable": "YES",
-        "column_default": null
-    },
-    {
-        "table_name": "cases",
-        "column_name": "party_b_id",
-        "data_type": "uuid",
-        "is_nullable": "YES",
-        "column_default": null
-    },
-    {
-        "table_name": "cases",
-        "column_name": "party_b_name",
-        "data_type": "character varying",
-        "is_nullable": "YES",
-        "column_default": null
-    },
-    {
-        "table_name": "cases",
-        "column_name": "party_b_argument",
-        "data_type": "text",
-        "is_nullable": "YES",
-        "column_default": null
-    },
-    {
-        "table_name": "cases",
-        "column_name": "party_b_evidence_text",
-        "data_type": "ARRAY",
-        "is_nullable": "YES",
-        "column_default": "'{}'::text[]"
-    },
-    {
-        "table_name": "cases",
-        "column_name": "party_b_evidence_images",
-        "data_type": "ARRAY",
-        "is_nullable": "YES",
-        "column_default": "'{}'::text[]"
-    },
-    {
-        "table_name": "cases",
-        "column_name": "party_b_ip",
-        "data_type": "character varying",
-        "is_nullable": "YES",
-        "column_default": null
-    },
-    {
-        "table_name": "cases",
-        "column_name": "created_at",
-        "data_type": "timestamp with time zone",
-        "is_nullable": "YES",
-        "column_default": "now()"
-    },
-    {
-        "table_name": "cases",
-        "column_name": "responded_at",
-        "data_type": "timestamp with time zone",
-        "is_nullable": "YES",
-        "column_default": null
-    },
-    {
-        "table_name": "cases",
-        "column_name": "completed_at",
-        "data_type": "timestamp with time zone",
-        "is_nullable": "YES",
-        "column_default": null
-    },
-    {
-        "table_name": "cases",
-        "column_name": "expires_at",
-        "data_type": "timestamp with time zone",
-        "is_nullable": "YES",
-        "column_default": "(now() + '2 days'::interval)"
-    },
-    {
-        "table_name": "cases",
-        "column_name": "party_a_appealed",
-        "data_type": "boolean",
-        "is_nullable": "YES",
-        "column_default": "false"
-    },
-    {
-        "table_name": "cases",
-        "column_name": "party_b_appealed",
-        "data_type": "boolean",
-        "is_nullable": "YES",
-        "column_default": "false"
-    },
-    {
-        "table_name": "cases",
-        "column_name": "appeal_count",
-        "data_type": "integer",
-        "is_nullable": "YES",
-        "column_default": "0"
-    },
-    {
-        "table_name": "user_badges",
-        "column_name": "id",
-        "data_type": "uuid",
-        "is_nullable": "NO",
-        "column_default": "gen_random_uuid()"
-    },
-    {
-        "table_name": "user_badges",
-        "column_name": "user_id",
-        "data_type": "uuid",
-        "is_nullable": "YES",
-        "column_default": null
-    },
-    {
-        "table_name": "user_badges",
-        "column_name": "badge_id",
-        "data_type": "character varying",
-        "is_nullable": "NO",
-        "column_default": null
-    },
-    {
-        "table_name": "user_badges",
-        "column_name": "badge_name",
-        "data_type": "character varying",
-        "is_nullable": "NO",
-        "column_default": null
-    },
-    {
-        "table_name": "user_badges",
-        "column_name": "badge_description",
-        "data_type": "text",
-        "is_nullable": "YES",
-        "column_default": null
-    },
-    {
-        "table_name": "user_badges",
-        "column_name": "badge_icon",
-        "data_type": "character varying",
-        "is_nullable": "YES",
-        "column_default": null
-    },
-    {
-        "table_name": "user_badges",
-        "column_name": "badge_tier",
-        "data_type": "character varying",
-        "is_nullable": "YES",
-        "column_default": "'bronze'::character varying"
-    },
-    {
-        "table_name": "user_badges",
-        "column_name": "earned_at",
-        "data_type": "timestamp with time zone",
-        "is_nullable": "YES",
-        "column_default": "now()"
-    },
-    {
-        "table_name": "user_case_history",
-        "column_name": "id",
-        "data_type": "uuid",
-        "is_nullable": "NO",
-        "column_default": "gen_random_uuid()"
-    },
-    {
-        "table_name": "user_case_history",
-        "column_name": "user_id",
-        "data_type": "uuid",
-        "is_nullable": "YES",
-        "column_default": null
-    },
-    {
-        "table_name": "user_case_history",
-        "column_name": "case_id",
-        "data_type": "uuid",
-        "is_nullable": "YES",
-        "column_default": null
-    },
-    {
-        "table_name": "user_case_history",
-        "column_name": "case_code",
-        "data_type": "character varying",
-        "is_nullable": "NO",
-        "column_default": null
-    },
-    {
-        "table_name": "user_case_history",
-        "column_name": "role",
-        "data_type": "character varying",
-        "is_nullable": "NO",
-        "column_default": null
-    },
-    {
-        "table_name": "user_case_history",
-        "column_name": "opponent_name",
-        "data_type": "character varying",
-        "is_nullable": "YES",
-        "column_default": null
-    },
-    {
-        "table_name": "user_case_history",
-        "column_name": "outcome",
-        "data_type": "character varying",
-        "is_nullable": "NO",
-        "column_default": null
-    },
-    {
-        "table_name": "user_case_history",
-        "column_name": "score",
-        "data_type": "integer",
-        "is_nullable": "YES",
-        "column_default": null
-    },
-    {
-        "table_name": "user_case_history",
-        "column_name": "opponent_score",
-        "data_type": "integer",
-        "is_nullable": "YES",
-        "column_default": null
-    },
-    {
-        "table_name": "user_case_history",
-        "column_name": "category",
-        "data_type": "character varying",
-        "is_nullable": "YES",
-        "column_default": null
-    },
-    {
-        "table_name": "user_case_history",
-        "column_name": "tone",
-        "data_type": "character varying",
-        "is_nullable": "YES",
-        "column_default": null
-    },
-    {
-        "table_name": "user_case_history",
-        "column_name": "had_evidence",
-        "data_type": "boolean",
-        "is_nullable": "YES",
-        "column_default": "false"
-    },
-    {
-        "table_name": "user_case_history",
-        "column_name": "fallacies_count",
-        "data_type": "integer",
-        "is_nullable": "YES",
-        "column_default": "0"
-    },
-    {
-        "table_name": "user_case_history",
-        "column_name": "created_at",
-        "data_type": "timestamp with time zone",
-        "is_nullable": "YES",
-        "column_default": "now()"
-    },
-    {
-        "table_name": "user_stats",
-        "column_name": "id",
-        "data_type": "uuid",
-        "is_nullable": "NO",
-        "column_default": "gen_random_uuid()"
-    },
-    {
-        "table_name": "user_stats",
-        "column_name": "user_id",
-        "data_type": "uuid",
-        "is_nullable": "YES",
-        "column_default": null
-    },
-    {
-        "table_name": "user_stats",
-        "column_name": "total_cases",
-        "data_type": "integer",
-        "is_nullable": "YES",
-        "column_default": "0"
-    },
-    {
-        "table_name": "user_stats",
-        "column_name": "total_wins",
-        "data_type": "integer",
-        "is_nullable": "YES",
-        "column_default": "0"
-    },
-    {
-        "table_name": "user_stats",
-        "column_name": "total_losses",
-        "data_type": "integer",
-        "is_nullable": "YES",
-        "column_default": "0"
-    },
-    {
-        "table_name": "user_stats",
-        "column_name": "total_draws",
-        "data_type": "integer",
-        "is_nullable": "YES",
-        "column_default": "0"
-    },
-    {
-        "table_name": "user_stats",
-        "column_name": "win_rate",
-        "data_type": "numeric",
-        "is_nullable": "YES",
-        "column_default": "0"
-    },
-    {
-        "table_name": "user_stats",
-        "column_name": "current_streak",
-        "data_type": "integer",
-        "is_nullable": "YES",
-        "column_default": "0"
-    },
-    {
-        "table_name": "user_stats",
-        "column_name": "longest_streak",
-        "data_type": "integer",
-        "is_nullable": "YES",
-        "column_default": "0"
-    },
-    {
-        "table_name": "user_stats",
-        "column_name": "streak_type",
-        "data_type": "character varying",
-        "is_nullable": "YES",
-        "column_default": "'none'::character varying"
-    },
-    {
-        "table_name": "user_stats",
-        "column_name": "category_stats",
-        "data_type": "jsonb",
-        "is_nullable": "YES",
-        "column_default": "'{\"tech\": {\"wins\": 0, \"draws\": 0, \"total\": 0, \"losses\": 0}, \"sports\": {\"wins\": 0, \"draws\": 0, \"total\": 0, \"losses\": 0}, \"general\": {\"wins\": 0, \"draws\": 0, \"total\": 0, \"losses\": 0}, \"roommate\": {\"wins\": 0, \"draws\": 0, \"total\": 0, \"losses\": 0}, \"relationship\": {\"wins\": 0, \"draws\": 0, \"total\": 0, \"losses\": 0}}'::jsonb"
-    },
-    {
-        "table_name": "user_stats",
-        "column_name": "avg_score",
-        "data_type": "numeric",
-        "is_nullable": "YES",
-        "column_default": "0"
-    },
-    {
-        "table_name": "user_stats",
-        "column_name": "total_fallacies_detected",
-        "data_type": "integer",
-        "is_nullable": "YES",
-        "column_default": "0"
-    },
-    {
-        "table_name": "user_stats",
-        "column_name": "common_strengths",
-        "data_type": "jsonb",
-        "is_nullable": "YES",
-        "column_default": "'[]'::jsonb"
-    },
-    {
-        "table_name": "user_stats",
-        "column_name": "common_weaknesses",
-        "data_type": "jsonb",
-        "is_nullable": "YES",
-        "column_default": "'[]'::jsonb"
-    },
-    {
-        "table_name": "user_stats",
-        "column_name": "cases_with_evidence",
-        "data_type": "integer",
-        "is_nullable": "YES",
-        "column_default": "0"
-    },
-    {
-        "table_name": "user_stats",
-        "column_name": "evidence_win_rate",
-        "data_type": "numeric",
-        "is_nullable": "YES",
-        "column_default": "0"
-    },
-    {
-        "table_name": "user_stats",
-        "column_name": "created_at",
-        "data_type": "timestamp with time zone",
-        "is_nullable": "YES",
-        "column_default": "now()"
-    },
-    {
-        "table_name": "user_stats",
-        "column_name": "updated_at",
-        "data_type": "timestamp with time zone",
-        "is_nullable": "YES",
-        "column_default": "now()"
-    },
-    {
-        "table_name": "user_stats",
-        "column_name": "longest_win_streak",
-        "data_type": "integer",
-        "is_nullable": "YES",
-        "column_default": "0"
-    },
-    {
-        "table_name": "user_stats",
-        "column_name": "longest_loss_streak",
-        "data_type": "integer",
-        "is_nullable": "YES",
-        "column_default": "0"
-    },
-    {
-        "table_name": "verdict_usage",
-        "column_name": "id",
-        "data_type": "uuid",
-        "is_nullable": "NO",
-        "column_default": "gen_random_uuid()"
-    },
-    {
-        "table_name": "verdict_usage",
-        "column_name": "user_id",
-        "data_type": "uuid",
-        "is_nullable": "YES",
-        "column_default": null
-    },
-    {
-        "table_name": "verdict_usage",
-        "column_name": "guest_ip",
-        "data_type": "character varying",
-        "is_nullable": "YES",
-        "column_default": null
-    },
-    {
-        "table_name": "verdict_usage",
-        "column_name": "case_id",
-        "data_type": "uuid",
-        "is_nullable": "YES",
-        "column_default": null
-    },
-    {
-        "table_name": "verdict_usage",
-        "column_name": "used_at",
-        "data_type": "timestamp with time zone",
-        "is_nullable": "YES",
-        "column_default": "now()"
-    },
-    {
-        "table_name": "verdicts",
-        "column_name": "id",
-        "data_type": "uuid",
-        "is_nullable": "NO",
-        "column_default": "gen_random_uuid()"
-    },
-    {
-        "table_name": "verdicts",
-        "column_name": "case_id",
-        "data_type": "uuid",
-        "is_nullable": "YES",
-        "column_default": null
-    },
-    {
-        "table_name": "verdicts",
-        "column_name": "party_a_score",
-        "data_type": "integer",
-        "is_nullable": "YES",
-        "column_default": null
-    },
-    {
-        "table_name": "verdicts",
-        "column_name": "party_b_score",
-        "data_type": "integer",
-        "is_nullable": "YES",
-        "column_default": null
-    },
-    {
-        "table_name": "verdicts",
-        "column_name": "party_a_analysis",
-        "data_type": "jsonb",
-        "is_nullable": "YES",
-        "column_default": "'{}'::jsonb"
-    },
-    {
-        "table_name": "verdicts",
-        "column_name": "party_b_analysis",
-        "data_type": "jsonb",
-        "is_nullable": "YES",
-        "column_default": "'{}'::jsonb"
-    },
-    {
-        "table_name": "verdicts",
-        "column_name": "winner",
-        "data_type": "character varying",
-        "is_nullable": "YES",
-        "column_default": null
-    },
-    {
-        "table_name": "verdicts",
-        "column_name": "confidence",
-        "data_type": "integer",
-        "is_nullable": "YES",
-        "column_default": null
-    },
-    {
-        "table_name": "verdicts",
-        "column_name": "summary",
-        "data_type": "text",
-        "is_nullable": "YES",
-        "column_default": null
-    },
-    {
-        "table_name": "verdicts",
-        "column_name": "reasoning",
-        "data_type": "text",
-        "is_nullable": "YES",
-        "column_default": null
-    },
-    {
-        "table_name": "verdicts",
-        "column_name": "advice",
-        "data_type": "text",
-        "is_nullable": "YES",
-        "column_default": null
-    },
-    {
-        "table_name": "verdicts",
-        "column_name": "ai_provider",
-        "data_type": "character varying",
-        "is_nullable": "YES",
-        "column_default": null
-    },
-    {
-        "table_name": "verdicts",
-        "column_name": "receipt_image_url",
-        "data_type": "text",
-        "is_nullable": "YES",
-        "column_default": null
-    },
-    {
-        "table_name": "verdicts",
-        "column_name": "ruling_image_url",
-        "data_type": "text",
-        "is_nullable": "YES",
-        "column_default": null
-    },
-    {
-        "table_name": "verdicts",
-        "column_name": "created_at",
-        "data_type": "timestamp with time zone",
-        "is_nullable": "YES",
-        "column_default": "now()"
-    },
-    {
-        "table_name": "verdicts",
-        "column_name": "evidence_impact",
-        "data_type": "text",
-        "is_nullable": "YES",
-        "column_default": null
-    }
+  {
+    "table_name": "appeals",
+    "column_name": "id",
+    "data_type": "uuid",
+    "character_maximum_length": null,
+    "is_nullable": "NO",
+    "column_default": "gen_random_uuid()"
+  },
+  {
+    "table_name": "appeals",
+    "column_name": "case_id",
+    "data_type": "uuid",
+    "character_maximum_length": null,
+    "is_nullable": "NO",
+    "column_default": null
+  },
+  {
+    "table_name": "appeals",
+    "column_name": "appealing_party",
+    "data_type": "character varying",
+    "character_maximum_length": 10,
+    "is_nullable": "NO",
+    "column_default": null
+  },
+  {
+    "table_name": "appeals",
+    "column_name": "appellant_id",
+    "data_type": "uuid",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "table_name": "appeals",
+    "column_name": "reason",
+    "data_type": "text",
+    "character_maximum_length": null,
+    "is_nullable": "NO",
+    "column_default": null
+  },
+  {
+    "table_name": "appeals",
+    "column_name": "new_evidence_text",
+    "data_type": "text",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "table_name": "appeals",
+    "column_name": "new_evidence_images",
+    "data_type": "ARRAY",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": "'{}'::text[]"
+  },
+  {
+    "table_name": "appeals",
+    "column_name": "original_verdict",
+    "data_type": "jsonb",
+    "character_maximum_length": null,
+    "is_nullable": "NO",
+    "column_default": null
+  },
+  {
+    "table_name": "appeals",
+    "column_name": "original_winner",
+    "data_type": "character varying",
+    "character_maximum_length": 10,
+    "is_nullable": "NO",
+    "column_default": null
+  },
+  {
+    "table_name": "appeals",
+    "column_name": "original_party_a_score",
+    "data_type": "integer",
+    "character_maximum_length": null,
+    "is_nullable": "NO",
+    "column_default": null
+  },
+  {
+    "table_name": "appeals",
+    "column_name": "original_party_b_score",
+    "data_type": "integer",
+    "character_maximum_length": null,
+    "is_nullable": "NO",
+    "column_default": null
+  },
+  {
+    "table_name": "appeals",
+    "column_name": "appeal_verdict",
+    "data_type": "jsonb",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "table_name": "appeals",
+    "column_name": "new_winner",
+    "data_type": "character varying",
+    "character_maximum_length": 10,
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "table_name": "appeals",
+    "column_name": "new_party_a_score",
+    "data_type": "integer",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "table_name": "appeals",
+    "column_name": "new_party_b_score",
+    "data_type": "integer",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "table_name": "appeals",
+    "column_name": "verdict_changed",
+    "data_type": "boolean",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": "false"
+  },
+  {
+    "table_name": "appeals",
+    "column_name": "change_summary",
+    "data_type": "text",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "table_name": "appeals",
+    "column_name": "status",
+    "data_type": "character varying",
+    "character_maximum_length": 20,
+    "is_nullable": "YES",
+    "column_default": "'pending'::character varying"
+  },
+  {
+    "table_name": "appeals",
+    "column_name": "created_at",
+    "data_type": "timestamp with time zone",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": "now()"
+  },
+  {
+    "table_name": "appeals",
+    "column_name": "processed_at",
+    "data_type": "timestamp with time zone",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "table_name": "cases",
+    "column_name": "id",
+    "data_type": "uuid",
+    "character_maximum_length": null,
+    "is_nullable": "NO",
+    "column_default": "gen_random_uuid()"
+  },
+  {
+    "table_name": "cases",
+    "column_name": "code",
+    "data_type": "character varying",
+    "character_maximum_length": 20,
+    "is_nullable": "NO",
+    "column_default": null
+  },
+  {
+    "table_name": "cases",
+    "column_name": "category",
+    "data_type": "character varying",
+    "character_maximum_length": 20,
+    "is_nullable": "YES",
+    "column_default": "'general'::character varying"
+  },
+  {
+    "table_name": "cases",
+    "column_name": "tone",
+    "data_type": "character varying",
+    "character_maximum_length": 20,
+    "is_nullable": "YES",
+    "column_default": "'neutral'::character varying"
+  },
+  {
+    "table_name": "cases",
+    "column_name": "status",
+    "data_type": "character varying",
+    "character_maximum_length": 20,
+    "is_nullable": "YES",
+    "column_default": "'pending_response'::character varying"
+  },
+  {
+    "table_name": "cases",
+    "column_name": "party_a_id",
+    "data_type": "uuid",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "table_name": "cases",
+    "column_name": "party_a_name",
+    "data_type": "character varying",
+    "character_maximum_length": 100,
+    "is_nullable": "NO",
+    "column_default": null
+  },
+  {
+    "table_name": "cases",
+    "column_name": "party_a_argument",
+    "data_type": "text",
+    "character_maximum_length": null,
+    "is_nullable": "NO",
+    "column_default": null
+  },
+  {
+    "table_name": "cases",
+    "column_name": "party_a_evidence_text",
+    "data_type": "ARRAY",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": "'{}'::text[]"
+  },
+  {
+    "table_name": "cases",
+    "column_name": "party_a_evidence_images",
+    "data_type": "ARRAY",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": "'{}'::text[]"
+  },
+  {
+    "table_name": "cases",
+    "column_name": "party_a_ip",
+    "data_type": "character varying",
+    "character_maximum_length": 45,
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "table_name": "cases",
+    "column_name": "party_b_id",
+    "data_type": "uuid",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "table_name": "cases",
+    "column_name": "party_b_name",
+    "data_type": "character varying",
+    "character_maximum_length": 100,
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "table_name": "cases",
+    "column_name": "party_b_argument",
+    "data_type": "text",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "table_name": "cases",
+    "column_name": "party_b_evidence_text",
+    "data_type": "ARRAY",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": "'{}'::text[]"
+  },
+  {
+    "table_name": "cases",
+    "column_name": "party_b_evidence_images",
+    "data_type": "ARRAY",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": "'{}'::text[]"
+  },
+  {
+    "table_name": "cases",
+    "column_name": "party_b_ip",
+    "data_type": "character varying",
+    "character_maximum_length": 45,
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "table_name": "cases",
+    "column_name": "created_at",
+    "data_type": "timestamp with time zone",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": "now()"
+  },
+  {
+    "table_name": "cases",
+    "column_name": "responded_at",
+    "data_type": "timestamp with time zone",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "table_name": "cases",
+    "column_name": "completed_at",
+    "data_type": "timestamp with time zone",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "table_name": "cases",
+    "column_name": "expires_at",
+    "data_type": "timestamp with time zone",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": "(now() + '2 days'::interval)"
+  },
+  {
+    "table_name": "cases",
+    "column_name": "party_a_appealed",
+    "data_type": "boolean",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": "false"
+  },
+  {
+    "table_name": "cases",
+    "column_name": "party_b_appealed",
+    "data_type": "boolean",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": "false"
+  },
+  {
+    "table_name": "cases",
+    "column_name": "appeal_count",
+    "data_type": "integer",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": "0"
+  },
+  {
+    "table_name": "user_badges",
+    "column_name": "id",
+    "data_type": "uuid",
+    "character_maximum_length": null,
+    "is_nullable": "NO",
+    "column_default": "gen_random_uuid()"
+  },
+  {
+    "table_name": "user_badges",
+    "column_name": "user_id",
+    "data_type": "uuid",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "table_name": "user_badges",
+    "column_name": "badge_id",
+    "data_type": "character varying",
+    "character_maximum_length": 50,
+    "is_nullable": "NO",
+    "column_default": null
+  },
+  {
+    "table_name": "user_badges",
+    "column_name": "badge_name",
+    "data_type": "character varying",
+    "character_maximum_length": 100,
+    "is_nullable": "NO",
+    "column_default": null
+  },
+  {
+    "table_name": "user_badges",
+    "column_name": "badge_description",
+    "data_type": "text",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "table_name": "user_badges",
+    "column_name": "badge_icon",
+    "data_type": "character varying",
+    "character_maximum_length": 10,
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "table_name": "user_badges",
+    "column_name": "badge_tier",
+    "data_type": "character varying",
+    "character_maximum_length": 20,
+    "is_nullable": "YES",
+    "column_default": "'bronze'::character varying"
+  },
+  {
+    "table_name": "user_badges",
+    "column_name": "earned_at",
+    "data_type": "timestamp with time zone",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": "now()"
+  },
+  {
+    "table_name": "user_case_history",
+    "column_name": "id",
+    "data_type": "uuid",
+    "character_maximum_length": null,
+    "is_nullable": "NO",
+    "column_default": "gen_random_uuid()"
+  },
+  {
+    "table_name": "user_case_history",
+    "column_name": "user_id",
+    "data_type": "uuid",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "table_name": "user_case_history",
+    "column_name": "case_id",
+    "data_type": "uuid",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "table_name": "user_case_history",
+    "column_name": "case_code",
+    "data_type": "character varying",
+    "character_maximum_length": 20,
+    "is_nullable": "NO",
+    "column_default": null
+  },
+  {
+    "table_name": "user_case_history",
+    "column_name": "role",
+    "data_type": "character varying",
+    "character_maximum_length": 10,
+    "is_nullable": "NO",
+    "column_default": null
+  },
+  {
+    "table_name": "user_case_history",
+    "column_name": "opponent_name",
+    "data_type": "character varying",
+    "character_maximum_length": 100,
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "table_name": "user_case_history",
+    "column_name": "outcome",
+    "data_type": "character varying",
+    "character_maximum_length": 10,
+    "is_nullable": "NO",
+    "column_default": null
+  },
+  {
+    "table_name": "user_case_history",
+    "column_name": "score",
+    "data_type": "integer",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "table_name": "user_case_history",
+    "column_name": "opponent_score",
+    "data_type": "integer",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "table_name": "user_case_history",
+    "column_name": "category",
+    "data_type": "character varying",
+    "character_maximum_length": 20,
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "table_name": "user_case_history",
+    "column_name": "tone",
+    "data_type": "character varying",
+    "character_maximum_length": 20,
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "table_name": "user_case_history",
+    "column_name": "had_evidence",
+    "data_type": "boolean",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": "false"
+  },
+  {
+    "table_name": "user_case_history",
+    "column_name": "fallacies_count",
+    "data_type": "integer",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": "0"
+  },
+  {
+    "table_name": "user_case_history",
+    "column_name": "created_at",
+    "data_type": "timestamp with time zone",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": "now()"
+  },
+  {
+    "table_name": "user_stats",
+    "column_name": "id",
+    "data_type": "uuid",
+    "character_maximum_length": null,
+    "is_nullable": "NO",
+    "column_default": "gen_random_uuid()"
+  },
+  {
+    "table_name": "user_stats",
+    "column_name": "user_id",
+    "data_type": "uuid",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "table_name": "user_stats",
+    "column_name": "total_cases",
+    "data_type": "integer",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": "0"
+  },
+  {
+    "table_name": "user_stats",
+    "column_name": "total_wins",
+    "data_type": "integer",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": "0"
+  },
+  {
+    "table_name": "user_stats",
+    "column_name": "total_losses",
+    "data_type": "integer",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": "0"
+  },
+  {
+    "table_name": "user_stats",
+    "column_name": "total_draws",
+    "data_type": "integer",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": "0"
+  },
+  {
+    "table_name": "user_stats",
+    "column_name": "win_rate",
+    "data_type": "numeric",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": "0"
+  },
+  {
+    "table_name": "user_stats",
+    "column_name": "current_streak",
+    "data_type": "integer",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": "0"
+  },
+  {
+    "table_name": "user_stats",
+    "column_name": "longest_streak",
+    "data_type": "integer",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": "0"
+  },
+  {
+    "table_name": "user_stats",
+    "column_name": "streak_type",
+    "data_type": "character varying",
+    "character_maximum_length": 10,
+    "is_nullable": "YES",
+    "column_default": "'none'::character varying"
+  },
+  {
+    "table_name": "user_stats",
+    "column_name": "category_stats",
+    "data_type": "jsonb",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": "'{\"tech\": {\"wins\": 0, \"draws\": 0, \"total\": 0, \"losses\": 0}, \"sports\": {\"wins\": 0, \"draws\": 0, \"total\": 0, \"losses\": 0}, \"general\": {\"wins\": 0, \"draws\": 0, \"total\": 0, \"losses\": 0}, \"roommate\": {\"wins\": 0, \"draws\": 0, \"total\": 0, \"losses\": 0}, \"relationship\": {\"wins\": 0, \"draws\": 0, \"total\": 0, \"losses\": 0}}'::jsonb"
+  },
+  {
+    "table_name": "user_stats",
+    "column_name": "avg_score",
+    "data_type": "numeric",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": "0"
+  },
+  {
+    "table_name": "user_stats",
+    "column_name": "total_fallacies_detected",
+    "data_type": "integer",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": "0"
+  },
+  {
+    "table_name": "user_stats",
+    "column_name": "common_strengths",
+    "data_type": "jsonb",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": "'[]'::jsonb"
+  },
+  {
+    "table_name": "user_stats",
+    "column_name": "common_weaknesses",
+    "data_type": "jsonb",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": "'[]'::jsonb"
+  },
+  {
+    "table_name": "user_stats",
+    "column_name": "cases_with_evidence",
+    "data_type": "integer",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": "0"
+  },
+  {
+    "table_name": "user_stats",
+    "column_name": "evidence_win_rate",
+    "data_type": "numeric",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": "0"
+  },
+  {
+    "table_name": "user_stats",
+    "column_name": "created_at",
+    "data_type": "timestamp with time zone",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": "now()"
+  },
+  {
+    "table_name": "user_stats",
+    "column_name": "updated_at",
+    "data_type": "timestamp with time zone",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": "now()"
+  },
+  {
+    "table_name": "user_stats",
+    "column_name": "longest_win_streak",
+    "data_type": "integer",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": "0"
+  },
+  {
+    "table_name": "user_stats",
+    "column_name": "longest_loss_streak",
+    "data_type": "integer",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": "0"
+  },
+  {
+    "table_name": "verdict_usage",
+    "column_name": "id",
+    "data_type": "uuid",
+    "character_maximum_length": null,
+    "is_nullable": "NO",
+    "column_default": "gen_random_uuid()"
+  },
+  {
+    "table_name": "verdict_usage",
+    "column_name": "user_id",
+    "data_type": "uuid",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "table_name": "verdict_usage",
+    "column_name": "guest_ip",
+    "data_type": "character varying",
+    "character_maximum_length": 45,
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "table_name": "verdict_usage",
+    "column_name": "case_id",
+    "data_type": "uuid",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "table_name": "verdict_usage",
+    "column_name": "used_at",
+    "data_type": "timestamp with time zone",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": "now()"
+  },
+  {
+    "table_name": "verdicts",
+    "column_name": "id",
+    "data_type": "uuid",
+    "character_maximum_length": null,
+    "is_nullable": "NO",
+    "column_default": "gen_random_uuid()"
+  },
+  {
+    "table_name": "verdicts",
+    "column_name": "case_id",
+    "data_type": "uuid",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "table_name": "verdicts",
+    "column_name": "party_a_score",
+    "data_type": "integer",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "table_name": "verdicts",
+    "column_name": "party_b_score",
+    "data_type": "integer",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "table_name": "verdicts",
+    "column_name": "party_a_analysis",
+    "data_type": "jsonb",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": "'{}'::jsonb"
+  },
+  {
+    "table_name": "verdicts",
+    "column_name": "party_b_analysis",
+    "data_type": "jsonb",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": "'{}'::jsonb"
+  },
+  {
+    "table_name": "verdicts",
+    "column_name": "winner",
+    "data_type": "character varying",
+    "character_maximum_length": 10,
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "table_name": "verdicts",
+    "column_name": "confidence",
+    "data_type": "integer",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "table_name": "verdicts",
+    "column_name": "summary",
+    "data_type": "text",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "table_name": "verdicts",
+    "column_name": "reasoning",
+    "data_type": "text",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "table_name": "verdicts",
+    "column_name": "advice",
+    "data_type": "text",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "table_name": "verdicts",
+    "column_name": "ai_provider",
+    "data_type": "character varying",
+    "character_maximum_length": 20,
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "table_name": "verdicts",
+    "column_name": "receipt_image_url",
+    "data_type": "text",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "table_name": "verdicts",
+    "column_name": "ruling_image_url",
+    "data_type": "text",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "table_name": "verdicts",
+    "column_name": "created_at",
+    "data_type": "timestamp with time zone",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": "now()"
+  },
+  {
+    "table_name": "verdicts",
+    "column_name": "evidence_impact",
+    "data_type": "text",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": null
+  }
 ]
