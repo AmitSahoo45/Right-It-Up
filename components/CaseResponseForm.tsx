@@ -152,7 +152,11 @@ export function CaseResponseForm({ caseCode, caseData }: CaseResponseFormProps) 
 
             {/* Case Info Card */}
             <div className="bg-charcoal-layer/50 border border-white/10 rounded-2xl p-6 mb-8">
-                <div className="flex items-center justify-between mb-4">
+                {/* Case code - top on mobile */}
+                <div className="text-steel-grey text-xs mb-3 sm:hidden">Case #{caseCode}</div>
+
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                    {/* Judge info */}
                     <div className="flex items-center gap-3">
                         <div className="text-3xl">{judge.icon}</div>
                         <div>
@@ -160,9 +164,11 @@ export function CaseResponseForm({ caseCode, caseData }: CaseResponseFormProps) 
                             <div className="text-steel-grey text-sm">will judge this case</div>
                         </div>
                     </div>
-                    <div className="text-right">
-                        <div className="text-steel-grey text-xs">Case #{caseCode}</div>
-                        <div className="flex items-center gap-2 mt-1">
+
+                    {/* Case details */}
+                    <div className="sm:text-right mb-3">
+                        <div className="text-steel-grey text-xs hidden sm:block mb-1.5">Case #{caseCode}</div>
+                        <div className="flex flex-wrap items-center gap-2 sm:mt-1 sm:justify-end">
                             <span className="text-xs px-2 py-0.5 bg-cyber-blue/20 text-cyber-blue rounded-full">
                                 {category?.icon} {category?.label}
                             </span>
