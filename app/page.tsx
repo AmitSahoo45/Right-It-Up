@@ -149,7 +149,7 @@ export default function Home() {
                 {/* Footer */}
                 <div className="text-center border-t border-dashed border-white/20 pt-4">
                   <div className="text-steel-grey text-xs">════════════════════</div>
-                  <div className="text-steel-grey text-[10px] mt-2">Processed by Dr. Harmony 💖 • Nov 11, 2025</div>
+                  <div className="text-steel-grey text-[10px] mt-2">Processed by Judge Fairness ⚖️ • Nov 17, 2025</div>
                   <div className="text-steel-grey text-[10px]">
                     rightitup.vercel.app
                   </div>
