@@ -28,7 +28,130 @@ import {
     createFakeSuccessResponse
 } from '@/lib/honeypot/honeypot';
 import { rateLimitVerdict, getRateLimitHeaders } from '@/lib/ratelimit';
-import type { RespondCaseRequest, RespondCaseResponse, Dispute, AIVerdictResponse } from '@/types';
+import type { RespondCaseRequest, RespondCaseResponse, Dispute, AIVerdictResponse, Case } from '@/types';
+
+// Async verdict generation - runs in background after response is sent
+async function generateVerdictAsync({
+    caseId,
+    caseCode,
+    updatedCase,
+    partyBUserId,
+    partyBIp
+}: {
+    caseId: string;
+    caseCode: string;
+    updatedCase: Case;
+    partyBUserId: string | null;
+    partyBIp: string;
+}) {
+    try {
+        if (!updatedCase.party_b_name || !updatedCase.party_b_argument) {
+            throw new Error('Party B response data missing after submission');
+        }
+
+        const dispute: Dispute = {
+            category: updatedCase.category,
+            partyA: {
+                name: updatedCase.party_a_name,
+                argument: updatedCase.party_a_argument,
+                evidence: updatedCase.party_a_evidence_text
+            },
+            partyB: {
+                name: updatedCase.party_b_name,
+                argument: updatedCase.party_b_argument,
+                evidence: updatedCase.party_b_evidence_text
+            },
+            tone: updatedCase.tone
+        };
+
+        const partyAImages = updatedCase.party_a_evidence_images || [];
+        const partyBImages = updatedCase.party_b_evidence_images || [];
+
+        const aiResponse: AIVerdictResponse = await generateVerdict({
+            dispute,
+            category: updatedCase.category,
+            tone: updatedCase.tone,
+            partyAImages,
+            partyBImages
+        });
+
+        await saveVerdict(caseId, {
+            party_a_score: aiResponse.analysis.partyA.score,
+            party_b_score: aiResponse.analysis.partyB.score,
+            party_a_analysis: {
+                strengths: aiResponse.analysis.partyA.strengths || [],
+                weaknesses: aiResponse.analysis.partyA.weaknesses || [],
+                fallacies: aiResponse.analysis.partyA.fallacies || [],
+                evidenceQuality: aiResponse.analysis.partyA.evidenceQuality,
+                keyEvidence: aiResponse.analysis.partyA.keyEvidence || []
+            },
+            party_b_analysis: {
+                strengths: aiResponse.analysis.partyB.strengths || [],
+                weaknesses: aiResponse.analysis.partyB.weaknesses || [],
+                fallacies: aiResponse.analysis.partyB.fallacies || [],
+                evidenceQuality: aiResponse.analysis.partyB.evidenceQuality,
+                keyEvidence: aiResponse.analysis.partyB.keyEvidence || []
+            },
+            winner: aiResponse.verdict.winner,
+            confidence: aiResponse.verdict.confidence,
+            summary: aiResponse.verdict.summary,
+            reasoning: aiResponse.verdict.reasoning,
+            advice: aiResponse.verdict.advice,
+            evidence_impact: aiResponse.verdict.evidenceImpact,
+            ai_provider: 'gemini'
+        });
+
+        await recordUsage(
+            caseId,
+            updatedCase.party_a_id,
+            updatedCase.party_a_ip ?? null
+        );
+        await recordUsage(
+            caseId,
+            partyBUserId,
+            partyBIp
+        );
+
+        try {
+            const partyAHadEvidence = (updatedCase.party_a_evidence_text?.length || 0) > 0 ||
+                (updatedCase.party_a_evidence_images?.length || 0) > 0;
+            const partyBHadEvidence = (updatedCase.party_b_evidence_text?.length || 0) > 0 ||
+                (updatedCase.party_b_evidence_images?.length || 0) > 0;
+
+            await updateBothPartiesStats({
+                caseId: caseId,
+                caseCode: caseCode,
+                category: updatedCase.category,
+                tone: updatedCase.tone,
+                winner: aiResponse.verdict.winner,
+
+                partyAUserId: updatedCase.party_a_id,
+                partyAName: updatedCase.party_a_name,
+                partyAScore: aiResponse.analysis.partyA.score,
+                partyAHadEvidence,
+                partyAFallacies: aiResponse.analysis.partyA.fallacies?.length || 0,
+
+                partyBUserId: partyBUserId,
+                partyBName: updatedCase.party_b_name!,
+                partyBScore: aiResponse.analysis.partyB.score,
+                partyBHadEvidence,
+                partyBFallacies: aiResponse.analysis.partyB.fallacies?.length || 0,
+            });
+
+        } catch (statsError) {
+            console.error('Failed to update user stats:', statsError);
+        }
+
+        await updateCaseStatus(caseId, 'complete');
+        console.log(`Verdict generated successfully for case ${caseCode}`);
+
+    } catch (aiError) {
+        console.error('AI verdict generation failed:', aiError);
+        // Set status to 'error' instead of rolling back to 'pending_response'
+        // This prevents Party B from resubmitting when their response is already saved
+        await updateCaseStatus(caseId, 'pending_response');
+    }
+}
 
 export async function POST(
     request: Request,
@@ -219,124 +342,24 @@ export async function POST(
 
         await updateCaseStatus(caseData.id, 'analyzing');
 
-        try {
-            if (!updatedCase.party_b_name || !updatedCase.party_b_argument) {
-                throw new Error('Party B response data missing after submission');
-            }
+        // Generate verdict asynchronously (fire-and-forget)
+        // This allows the response to return immediately while verdict generates in background
+        generateVerdictAsync({
+            caseId: caseData.id,
+            caseCode: code,
+            updatedCase,
+            partyBUserId: user?.id || null,
+            partyBIp: clientIp
+        });
 
-            const dispute: Dispute = {
-                category: updatedCase.category,
-                partyA: {
-                    name: updatedCase.party_a_name,
-                    argument: updatedCase.party_a_argument,
-                    evidence: updatedCase.party_a_evidence_text
-                },
-                partyB: {
-                    name: updatedCase.party_b_name,
-                    argument: updatedCase.party_b_argument,
-                    evidence: updatedCase.party_b_evidence_text
-                },
-                tone: updatedCase.tone
-            };
-
-            const partyAImages = updatedCase.party_a_evidence_images || [];
-            const partyBImages = updatedCase.party_b_evidence_images || [];
-
-
-            const aiResponse: AIVerdictResponse = await generateVerdict({
-                dispute,
-                category: updatedCase.category,
-                tone: updatedCase.tone,
-                partyAImages,
-                partyBImages
-            });
-
-            await saveVerdict(caseData.id, {
-                party_a_score: aiResponse.analysis.partyA.score,
-                party_b_score: aiResponse.analysis.partyB.score,
-                party_a_analysis: {
-                    strengths: aiResponse.analysis.partyA.strengths || [],
-                    weaknesses: aiResponse.analysis.partyA.weaknesses || [],
-                    fallacies: aiResponse.analysis.partyA.fallacies || [],
-                    evidenceQuality: aiResponse.analysis.partyA.evidenceQuality,
-                    keyEvidence: aiResponse.analysis.partyA.keyEvidence || []
-                },
-                party_b_analysis: {
-                    strengths: aiResponse.analysis.partyB.strengths || [],
-                    weaknesses: aiResponse.analysis.partyB.weaknesses || [],
-                    fallacies: aiResponse.analysis.partyB.fallacies || [],
-                    evidenceQuality: aiResponse.analysis.partyB.evidenceQuality,
-                    keyEvidence: aiResponse.analysis.partyB.keyEvidence || []
-                },
-                winner: aiResponse.verdict.winner,
-                confidence: aiResponse.verdict.confidence,
-                summary: aiResponse.verdict.summary,
-                reasoning: aiResponse.verdict.reasoning,
-                advice: aiResponse.verdict.advice,
-                evidence_impact: aiResponse.verdict.evidenceImpact,
-                ai_provider: 'gemini'
-            });
-
-            await recordUsage(
-                caseData.id,
-                updatedCase.party_a_id,
-                updatedCase.party_a_ip ?? null
-            );
-            await recordUsage(
-                caseData.id,
-                user?.id || null,
-                clientIp
-            );
-
-            try {
-                const partyAHadEvidence = (updatedCase.party_a_evidence_text?.length || 0) > 0 ||
-                    (updatedCase.party_a_evidence_images?.length || 0) > 0;
-                const partyBHadEvidence = (updatedCase.party_b_evidence_text?.length || 0) > 0 ||
-                    (updatedCase.party_b_evidence_images?.length || 0) > 0;
-
-                await updateBothPartiesStats({
-                    caseId: caseData.id,
-                    caseCode: code,
-                    category: updatedCase.category,
-                    tone: updatedCase.tone,
-                    winner: aiResponse.verdict.winner,
-
-                    partyAUserId: updatedCase.party_a_id,
-                    partyAName: updatedCase.party_a_name,
-                    partyAScore: aiResponse.analysis.partyA.score,
-                    partyAHadEvidence,
-                    partyAFallacies: aiResponse.analysis.partyA.fallacies?.length || 0,
-
-                    partyBUserId: user?.id || null,
-                    partyBName: updatedCase.party_b_name!,
-                    partyBScore: aiResponse.analysis.partyB.score,
-                    partyBHadEvidence,
-                    partyBFallacies: aiResponse.analysis.partyB.fallacies?.length || 0,
-                });
-
-            } catch (statsError) {
-                console.error('Failed to update user stats:', statsError);
-            }
-
-            await updateCaseStatus(caseData.id, 'complete');
-            return NextResponse.json({
-                success: true,
-                status: 'complete',
-                verdict_url: `/verdict/${code}`
-            }, {
-                headers: getRateLimitHeaders(rateLimit)
-            });
-
-        } catch (aiError) {
-            console.error('AI verdict generation failed:', aiError);
-
-            await updateCaseStatus(caseData.id, 'pending_response');
-
-            return NextResponse.json({
-                success: false,
-                error: 'Failed to generate verdict. Please try again.'
-            }, { status: 500 });
-        }
+        // Return immediately with 'analyzing' status
+        // Frontend will redirect to case page which shows AnalyzingView with polling
+        return NextResponse.json({
+            success: true,
+            status: 'analyzing'
+        }, {
+            headers: getRateLimitHeaders(rateLimit)
+        });
 
     } catch (error) {
         console.error('Error responding to case:', error);

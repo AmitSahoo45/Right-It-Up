@@ -81,10 +81,9 @@ export function CaseResponseForm({ caseCode, caseData }: CaseResponseFormProps) 
             await refreshQuota();
             toast.success('Response submitted! Generating verdict...');
 
-            if (data.verdict_url)
-                router.push(data.verdict_url);
-            else
-                router.push(`/verdict/${caseCode}`);
+            // Always redirect to case page to show AnalyzingView with polling
+            // The verdict is generated asynchronously in the background
+            router.push(`/case/${caseCode}`);
 
         } catch (err) {
             toast.error(err instanceof Error ? err.message : 'Something went wrong');
