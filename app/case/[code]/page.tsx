@@ -3,6 +3,7 @@ import { getCaseWithVerdict, checkQuota } from '@/lib/db';
 import { headers } from 'next/headers';
 import { redirect, notFound } from 'next/navigation';
 
+import { getClientIp } from '@/lib/db';
 import { AnalyzingView } from '@/components/AnalyzingView';
 import { CaseCreatedView } from '@/components/CaseCreatedView';
 import { CaseResponseForm } from '@/components/CaseResponseForm';
@@ -23,7 +24,10 @@ export default async function CasePage({ params, searchParams }: CasePageProps) 
 
     // Get client IP
     const headersList = await headers();
-    const clientIp = headersList.get('x-forwarded-for')?.split(',')[0] ||
+    const clientIp = 
+        headersList.get('x-vercel-forwarded-for')?.split(',')[0]?.trim() ||
+        headersList.get('cf-connecting-ip') ||
+        headersList.get('x-forwarded-for')?.split(',')[0]?.trim() ||
         headersList.get('x-real-ip') ||
         '0.0.0.0';
 

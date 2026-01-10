@@ -35,7 +35,7 @@ export async function POST(
     { params }: { params: Promise<{ code: string }> }
 ): Promise<NextResponse<RespondCaseResponse>> {
     const clientIp = getClientIp(request);
-    
+
     const { code: rawCode } = await params;
 
     const code = sanitizeCaseCode(rawCode);
@@ -219,6 +219,10 @@ export async function POST(
         await updateCaseStatus(caseData.id, 'analyzing');
 
         try {
+            if (!updatedCase.party_b_name || !updatedCase.party_b_argument) {
+                throw new Error('Party B response data missing after submission');
+            }
+
             const dispute: Dispute = {
                 category: updatedCase.category,
                 partyA: {
@@ -227,8 +231,8 @@ export async function POST(
                     evidence: updatedCase.party_a_evidence_text
                 },
                 partyB: {
-                    name: updatedCase.party_b_name!,
-                    argument: updatedCase.party_b_argument!,
+                    name: updatedCase.party_b_name,
+                    argument: updatedCase.party_b_argument,
                     evidence: updatedCase.party_b_evidence_text
                 },
                 tone: updatedCase.tone
