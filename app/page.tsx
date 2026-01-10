@@ -292,7 +292,9 @@ export default function Home() {
             <div className="bg-charcoal-layer/50 border border-white/10 rounded-3xl p-6 hover:border-objection-red/30 transition-all">
               <div className="text-3xl mb-3">🔄</div>
               <h3 className="text-xl font-bold text-starlight-white mb-2">Appeal System</h3>
-              <p className="text-steel-grey text-sm">Don&apos;t agree? Submit new evidence and appeal once.</p>
+              <p className="text-steel-grey text-sm">
+                Don&apos;t agree? Submit new evidence and appeal once <span className="text-objection-red">(Under development)</span>
+              </p>
             </div>
 
             {/* Medium card */}
@@ -316,7 +318,7 @@ export default function Home() {
                 Ready to settle it?
               </h2>
               <p className="text-steel-grey text-lg mb-8 max-w-xl mx-auto">
-                Stop arguing in circles. Get an unbiased verdict in under 30 seconds. Your first case is free - no signup needed.
+                Stop arguing in circles. Get an unbiased verdict in under 1 minute.
               </p>
               <Link
                 href="/submit"
@@ -325,7 +327,7 @@ export default function Home() {
                 ⚖️ Start Your Case Now
               </Link>
               <p className="text-steel-grey text-sm mt-6">
-                No credit card • No signup for first verdict • Takes 30 seconds
+                No credit card • Takes 1 minute
               </p>
             </div>
           </div>

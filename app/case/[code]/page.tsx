@@ -103,7 +103,7 @@ export default async function CasePage({ params, searchParams }: CasePageProps) 
                                 Analyzing Arguments...
                             </h1>
                             <p className="text-steel-grey mb-8">
-                                The AI judge is reviewing both sides. This usually takes less than 30 seconds.
+                                The AI judge is reviewing both sides. This usually takes less than 1 minute.
                             </p>
                             <div className="flex justify-center">
                                 <div className="w-64 h-2 bg-charcoal-layer rounded-full overflow-hidden">
