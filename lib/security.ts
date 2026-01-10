@@ -1,5 +1,3 @@
-import DOMPurify from 'isomorphic-dompurify';
-
 const HTML_ENTITIES: Record<string, string> = {
     '&': '&amp;',
     '<': '&lt;',
@@ -29,16 +27,31 @@ export function stripHtml(str: string): string {
 // Use this for user-provided text that will be stored in the database
 export function sanitizeInput(input: string, maxLength: number = 5000): string {
     if (typeof input !== 'string') return '';
-    
-    input = input
+
+    return input
         .trim()
         .slice(0, maxLength)
         // Remove null bytes and other control characters (except newlines and tabs)
         .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '')
         // Normalize whitespace (multiple spaces to single, preserve newlines)
         .replace(/[^\S\n]+/g, ' ')
-        
-    return DOMPurify.sanitize(input, { ALLOWED_TAGS: [], ALLOWED_ATTR: [] });
+        // Remove script tags and content
+        .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+        // Remove style tags and content
+        .replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, '')
+        // Remove all HTML tags
+        .replace(/<[^>]*>/g, '')
+        // Remove HTML comments
+        .replace(/<!--[\s\S]*?-->/g, '')
+        // Decode common HTML entities
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+        .replace(/&amp;/g, '&')
+        .replace(/&quot;/g, '"')
+        .replace(/&#x27;/g, "'")
+        .replace(/&#x2F;/g, '/')
+        // Re-escape after decoding to prevent double-encoding issues
+        .replace(/[<>]/g, '');
 }
 
 // Sanitize input and also strip HTML tags
