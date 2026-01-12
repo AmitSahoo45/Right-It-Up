@@ -289,7 +289,7 @@ export async function POST(
         const evidenceImages = sanitizeUrls(body.party_b_evidence_images || []).slice(0, 5);
 
         // Server-side validation: minimum 3 evidence images required
-        const MIN_EVIDENCE_IMAGES = 3;
+        const MIN_EVIDENCE_IMAGES = 1;
         if (evidenceImages.length < MIN_EVIDENCE_IMAGES) {
             return NextResponse.json(
                 { success: false, error: `At least ${MIN_EVIDENCE_IMAGES} evidence screenshots are required` },

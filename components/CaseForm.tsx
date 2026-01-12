@@ -11,7 +11,7 @@ import { useHoneypot } from '@/hooks/useHoneypot';
 import type { VerdictTone, DisputeCategory, CaseFormData } from '@/types';
 
 export function CaseForm() {
-    const MIN_EVIDENCE_IMAGES = 3;
+    const MIN_EVIDENCE_IMAGES = 1;
     const router = useRouter();
 
     const [isSubmitting, setIsSubmitting] = useState(false);

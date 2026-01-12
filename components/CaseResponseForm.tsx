@@ -18,7 +18,7 @@ interface CaseResponseFormProps {
 }
 
 export function CaseResponseForm({ caseCode, caseData }: CaseResponseFormProps) {
-    const MIN_EVIDENCE_IMAGES = 3;
+    const MIN_EVIDENCE_IMAGES = 1;
 
     const router = useRouter();
     const { user, quota, refreshQuota } = useAuth();

@@ -21,7 +21,7 @@ export function EvidenceUploader({
     imageEvidence,
     onTextChange,
     onImageChange,
-    minImages = 3,
+    minImages = 1,
     maxImages = 5
 }: ExtendedEvidenceUploaderProps) {
     const [newTextEvidence, setNewTextEvidence] = useState('');
@@ -64,7 +64,7 @@ export function EvidenceUploader({
                 continue;
             }
             
-            if (file.size > 5 * 1024 * 1024) {
+            if (file.size > 1 * 1024 * 1024) {
                 setUploadError('Images must be under 5MB');
                 continue;
             }
@@ -249,7 +249,7 @@ export function EvidenceUploader({
                                 }
                             </span>
                             <span className="text-steel-grey text-xs">
-                                Chat screenshots, receipts, documents • Min {minImages} • Max {maxImages} images • 5MB each
+                                Chat screenshots, receipts, documents • Min {minImages} • Max {maxImages} images • 1MB each
                             </span>
                         </>
                     )}
