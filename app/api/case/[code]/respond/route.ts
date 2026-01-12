@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, after } from 'next/server';
 import { createClient } from '@/utils/supabase/server';
 import {
     getCaseByCode,
@@ -344,13 +344,15 @@ export async function POST(
 
         // Generate verdict asynchronously (fire-and-forget)
         // This allows the response to return immediately while verdict generates in background
-        generateVerdictAsync({
-            caseId: caseData.id,
-            caseCode: code,
-            updatedCase,
-            partyBUserId: user?.id || null,
-            partyBIp: clientIp
-        });
+        after(
+            generateVerdictAsync({
+                caseId: caseData.id,
+                caseCode: code,
+                updatedCase,
+                partyBUserId: user?.id || null,
+                partyBIp: clientIp
+            })
+        )
 
         // Return immediately with 'analyzing' status
         // Frontend will redirect to case page which shows AnalyzingView with polling
