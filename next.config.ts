@@ -1,15 +1,6 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-    // Supabase - India Connectivity problem
-      async rewrites() {
-        return [
-          {
-            source: '/api/supabase/:path*',
-            destination: `${process.env.SUPABASE_URL}/:path*`,
-          },
-        ]
-      },
     // Security headers
     headers: async () => [
         {
